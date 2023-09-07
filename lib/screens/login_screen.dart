@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:steady_streak/screens/forgot_password_screen.dart';
-import 'package:steady_streak/screens/home_screen.dart';
 import 'package:steady_streak/screens/nav_bar.dart';
 import 'package:steady_streak/screens/signup_screen.dart';
 import 'package:steady_streak/utils/colors.dart';
@@ -36,9 +35,12 @@ class _LoginScreenState extends State<LoginScreen> {
           headers: {"content-Type": "application/json"});
       if (res.statusCode == 200) {
         showSnackBar(context, "Logged in successfully.");
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => BottomNav()),
+          MaterialPageRoute(
+            builder: (context) =>
+                BottomNav(email: emailController.text.toString()),
+          ),
         );
       } else {
         var jsonResponse = jsonDecode(res.body);

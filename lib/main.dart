@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:steady_streak/screens/login_screen.dart';
-import 'package:steady_streak/screens/nav_bar.dart';
 
 void main() {
   runApp(const MyApp());

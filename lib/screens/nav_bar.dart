@@ -1,13 +1,19 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
+
 import 'package:steady_streak/screens/home_screen.dart';
 import 'package:steady_streak/screens/profile_screen.dart';
 
 import 'analytics_screen.dart';
 
 class BottomNav extends StatefulWidget {
-  const BottomNav({super.key});
+  String email;
+   BottomNav({
+    Key? key,
+    required this.email,
+  }) : super(key: key);
 
   @override
   State<BottomNav> createState() => _BottomNavState();
@@ -16,6 +22,11 @@ class BottomNav extends StatefulWidget {
 class _BottomNavState extends State<BottomNav> {
   PersistentTabController _controller =
       PersistentTabController(initialIndex: 1);
+
+      
+List<Widget> _buildScreens() {
+  return [AnalyticsScreen(), HomeScreen(email: widget.email), ProfileScreen()];
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,9 +56,6 @@ class _BottomNavState extends State<BottomNav> {
   }
 }
 
-List<Widget> _buildScreens() {
-  return [AnalyticsScreen(), HomeScreen(), ProfileScreen()];
-}
 
 List<PersistentBottomNavBarItem> _navBarsItems() {
   return [

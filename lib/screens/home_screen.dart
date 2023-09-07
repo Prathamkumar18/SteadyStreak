@@ -1,21 +1,32 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:steady_streak/screens/task.dart';
 import 'package:steady_streak/utils/colors.dart';
+import 'package:steady_streak/utils/config.dart';
 import 'package:steady_streak/widgets/task_item.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  String email;
+
+  HomeScreen({
+    Key? key,
+    required this.email,
+  }) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String userName = "Pratham Kumar";
+  String userName = "Mr. X";
   int c = 0;
   int total = 6;
+
   void incrementCounter(bool isChecked) {
     setState(() {
       if (isChecked) {
@@ -26,6 +37,22 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  Future<void> retrieveUserName() async {
+    final response = await http.get(
+      Uri.parse('$getUserNameByEmail/${widget.email}'),
+    );
+    final responseBody = json.decode(response.body);
+    setState(() {
+      userName = responseBody['name'];
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    retrieveUserName();
+  }
+
   @override
   Widget build(BuildContext context) {
     DateTime now = DateTime.now();
@@ -34,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
     var w = MediaQuery.of(context).size.width;
     var h = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: bg,
+      backgroundColor: Color.fromARGB(255, 30, 22, 44),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -42,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 250,
               width: w,
               decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 228, 228, 228),
+                  color: Color.fromARGB(255, 255, 255, 246),
                   borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(30),
                       bottomRight: Radius.circular(30))),
@@ -242,15 +269,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: GoogleFonts.davidLibre(
                     fontWeight: FontWeight.bold,
                     fontSize: 30,
-                    color: Colors.black),
+                    color: Colors.white),
               ),
               Spacer(),
               ElevatedButton.icon(
                   style: ButtonStyle(
                       overlayColor: MaterialStateColor.resolveWith(
-                          (states) => Colors.white),
+                          (states) => Colors.black),
                       backgroundColor: MaterialStateColor.resolveWith(
-                          (states) => Colors.black)),
+                          (states) => Color.fromARGB(255, 218, 218, 218))),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -259,11 +286,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   icon: Icon(
                     Icons.add,
-                    color: Colors.white,
+                    color: Colors.black,
                   ),
                   label: Text(
                     "Add Task",
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: Colors.black),
                   )),
               SizedBox(
                 width: 10,
