@@ -1,6 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -61,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
     var w = MediaQuery.of(context).size.width;
     var h = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 30, 22, 44),
+      backgroundColor: Color.fromARGB(255, 1, 9, 39),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -69,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 250,
               width: w,
               decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 255, 255, 246),
+                  color: Color.fromARGB(255, 227, 227, 227),
                   borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(30),
                       bottomRight: Radius.circular(30))),
@@ -281,7 +279,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => AddTaskScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => AddTaskScreen(
+                                email: widget.email,
+                              )),
                     );
                   },
                   icon: Icon(

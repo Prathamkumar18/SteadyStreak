@@ -1,6 +1,10 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 import 'package:steady_streak/utils/colors.dart';
+import 'package:steady_streak/utils/config.dart';
 import 'package:steady_streak/widgets/color_selector.dart';
 import 'package:steady_streak/widgets/custom_button.dart';
 import 'package:steady_streak/widgets/icon_selector.dart';
@@ -8,7 +12,11 @@ import 'package:steady_streak/widgets/priority_selector.dart';
 import 'package:steady_streak/widgets/yes_no_selector.dart';
 
 class AddTaskScreen extends StatefulWidget {
-  const AddTaskScreen({super.key});
+  String email;
+  AddTaskScreen({
+    Key? key,
+    required this.email,
+  }) : super(key: key);
 
   @override
   State<AddTaskScreen> createState() => _AddTaskScreenState();
@@ -19,6 +27,38 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   TextEditingController taskController = TextEditingController();
   TextEditingController descController = TextEditingController();
+  String priority = "";
+  String color = "";
+  String daily = "";
+  String icon = "";
+  bool check() {
+    if (taskController.text.isEmpty ||
+        descController.text.isEmpty ||
+        color.isEmpty ||
+        icon.isEmpty ||
+        priority.isEmpty ||
+        daily.isEmpty) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  Future<void> addActivity(
+      String email, Map<String, dynamic> activityData) async {
+    final url = Uri.parse('$addTask/$email');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(activityData),
+    );
+
+    if (response.statusCode == 200) {
+      print('Activity added successfully');
+    } else {
+      print('Failed to add activity: ${response.body}');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -161,7 +201,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     Icons.movie,
                   ],
                   onIconSelected: (selectedIcon) {
-                    print('Selected Icon: $selectedIcon');
+                    setState(() {
+                      icon = selectedIcon.toString();
+                    });
                   },
                 ),
                 SizedBox(
@@ -179,7 +221,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 ),
                 ColorSelector(
                   onColorSelected: (selectedColor) {
-                    print('Selected Color: $selectedColor');
+                    setState(() {
+                      color = selectedColor.toString();
+                    });
                   },
                 ),
                 SizedBox(
@@ -197,7 +241,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 ),
                 PrioritySelector(
                   onPrioritySelected: (selectedPriority) {
-                    print('Selected Priority: $selectedPriority');
+                    setState(() {
+                      priority = selectedPriority.toString();
+                    });
                   },
                 ),
                 SizedBox(
@@ -215,7 +261,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 ),
                 YesNoSelector(
                   onYesNoSelected: (selectedOption) {
-                    print('Selected Option: $selectedOption');
+                    setState(() {
+                      daily = selectedOption.toString();
+                    });
                   },
                 ),
                 SizedBox(
@@ -224,9 +272,22 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 Center(
                   child: CustomButton(
                       text: "Add Task",
-                      color: Colors.black,
+                      color: (check()) ? Colors.black : Colors.grey,
                       textColor: Colors.white,
-                      onPressed: () {},
+                      onPressed: () {
+                        if (check()) {
+                          final userEmail = widget.email;
+                          final activityDetails = {
+                            'color': color,
+                            'icon': icon,
+                            'title': taskController.text.toString(),
+                            'description': descController.text.toString(),
+                            'priority': priority,
+                            'daily': daily,
+                          };
+                          addActivity(userEmail, activityDetails);
+                        }
+                      },
                       image: false),
                 ),
                 SizedBox(
