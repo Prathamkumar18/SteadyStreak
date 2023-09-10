@@ -108,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
     var w = MediaQuery.of(context).size.width;
     var h = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 238, 238, 255),
+      backgroundColor: Colors.black,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -116,11 +116,10 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 260,
               width: w,
               decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black),
-                  color: Color.fromARGB(255, 241, 246, 254),
+                  color: Colors.white,
                   borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(30),
-                      bottomRight: Radius.circular(30))),
+                      bottomLeft: Radius.circular(20),
+                      bottomRight: Radius.circular(20))),
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -324,19 +323,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 width: 10,
               ),
               Text(
-                "Activities:",
-                style: GoogleFonts.davidLibre(
+                "Today's Task",
+                style: GoogleFonts.asap(
                     fontWeight: FontWeight.bold,
                     fontSize: 30,
-                    color: Colors.black),
+                    color: Color.fromARGB(255, 244, 254, 255)),
               ),
               Spacer(),
               ElevatedButton.icon(
                   style: ButtonStyle(
                       overlayColor: MaterialStateColor.resolveWith(
-                          (states) => Colors.white),
+                          (states) => Colors.black),
                       backgroundColor: MaterialStateColor.resolveWith(
-                          (states) => Colors.black)),
+                          (states) => Colors.white)),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -348,11 +347,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   icon: Icon(
                     Icons.add,
-                    color: Colors.white,
+                    color: Colors.black,
                   ),
                   label: Text(
                     "Add Task",
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: Colors.black),
                   )),
               SizedBox(
                 width: 10,

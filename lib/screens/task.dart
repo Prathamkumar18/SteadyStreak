@@ -96,7 +96,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       style: GoogleFonts.wellfleet(
                           fontWeight: FontWeight.bold,
                           fontSize: 30,
-                          color: Colors.black),
+                          color: Colors.blue),
                     ),
                     Spacer(),
                     Icon(
