@@ -1,15 +1,18 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import 'package:steady_streak/activity.dart';
 
 class TaskItem extends StatefulWidget {
   final Activity activity;
   final ValueChanged<bool> onChecked;
-
+  final VoidCallback onDelete;
   TaskItem({
     Key? key,
     required this.activity,
     required this.onChecked,
+    required this.onDelete,
   }) : super(key: key);
 
   @override
@@ -146,10 +149,15 @@ class _TaskItemState extends State<TaskItem> {
                         ),
                       ),
                     ),
-                    Icon(
-                      Icons.delete_forever,
+                    IconButton(
+                      icon: Icon(
+                        Icons.delete_forever,
+                        size: 35,
+                      ),
                       color: Colors.red,
-                      size: 35,
+                      onPressed: () {
+                        widget.onDelete();
+                      },
                     )
                   ],
                 ),

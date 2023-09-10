@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isLoading = true;
   String userName = "";
   int c = 0;
-  int total = 1;
+  int total = 0;
 
   void incrementCounter(bool isChecked) {
     setState(() {
@@ -61,6 +61,28 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       userName = responseBody['name'];
     });
+  }
+
+  Future<void> deleteTask(String email, String title) async {
+    final url = Uri.parse(deleteActivity);
+    final response = await http.delete(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'email': email,
+        'title': title,
+      }),
+    );
+
+    if (response.statusCode == 204) {
+      setState(() {
+        activities.removeWhere((activity) => activity.title == title);
+      });
+    } else {
+      print('Failed to delete task');
+    }
   }
 
   @override
@@ -268,11 +290,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                 backgroundColor: Colors.grey,
                                 valueColor:
                                     AlwaysStoppedAnimation<Color>(Colors.black),
-                                value: c / total,
+                                value: (total == 0) ? 0 : c / total,
                               ),
                             ),
                             Text(
-                              '${(c / total * 100).toInt()}%',
+                              (total == 0)
+                                  ? '0'
+                                  : '${(c / total * 100).toInt()}%',
                               style: TextStyle(
                                 fontSize: 13,
                                 color: bg,
@@ -385,6 +409,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             TaskItem(
                               activity: activity,
                               onChecked: incrementCounter,
+                              onDelete: () {
+                                deleteTask(widget.email, activity.title);
+                              },
                             ),
                         ],
                       ),
