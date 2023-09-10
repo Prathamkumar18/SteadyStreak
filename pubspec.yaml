@@ -39,6 +39,7 @@ dependencies:
   intl: ^0.17.0
   google_fonts: 
   glassmorphism: 
+  shimmer: 
   http: 
 
 dev_dependencies:

@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:steady_streak/screens/task.dart';
 import 'package:steady_streak/utils/colors.dart';
 import 'package:steady_streak/utils/config.dart';
 import 'package:steady_streak/widgets/task_item.dart';
+import '../activity.dart';
 
 class HomeScreen extends StatefulWidget {
   String email;
@@ -21,9 +23,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String userName = "Mr. X";
+  List<Activity> activities = [];
+  bool isLoading = true;
+  String userName = "";
   int c = 0;
-  int total = 6;
+  int total = 1;
 
   void incrementCounter(bool isChecked) {
     setState(() {
@@ -33,6 +37,20 @@ class _HomeScreenState extends State<HomeScreen> {
         c--;
       }
     });
+  }
+
+  Future<List<Activity>> fetchActivities() async {
+    final response = await http.get(
+        Uri.parse('http://10.0.2.2:8082/user/${widget.email}/all-activities'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body)['activities'];
+      List<Activity> activities =
+          data.map((json) => Activity.fromJson(json)).toList();
+      return activities;
+    } else {
+      throw Exception('Failed to fetch activities');
+    }
   }
 
   Future<void> retrieveUserName() async {
@@ -49,6 +67,15 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     retrieveUserName();
+    fetchActivities().then((fetchedActivities) {
+      Future.delayed(Duration(seconds: 2), () {
+        setState(() {
+          activities = fetchedActivities;
+          isLoading = false;
+          total = activities.length;
+        });
+      });
+    });
   }
 
   @override
@@ -59,15 +86,16 @@ class _HomeScreenState extends State<HomeScreen> {
     var w = MediaQuery.of(context).size.width;
     var h = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 1, 9, 39),
+      backgroundColor: Color.fromARGB(255, 238, 238, 255),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-              height: 250,
+              height: 260,
               width: w,
               decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 227, 227, 227),
+                  border: Border.all(color: Colors.black),
+                  color: Color.fromARGB(255, 241, 246, 254),
                   borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(30),
                       bottomRight: Radius.circular(30))),
@@ -253,6 +281,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
+                    ),
+                    Center(
+                      child: Container(
+                        height: 5,
+                        width: 80,
+                        decoration: BoxDecoration(
+                            color: Color.fromARGB(255, 71, 71, 71),
+                            borderRadius: BorderRadius.circular(30)),
+                      ),
                     )
                   ])),
           SizedBox(height: 5),
@@ -267,15 +304,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: GoogleFonts.davidLibre(
                     fontWeight: FontWeight.bold,
                     fontSize: 30,
-                    color: Colors.white),
+                    color: Colors.black),
               ),
               Spacer(),
               ElevatedButton.icon(
                   style: ButtonStyle(
                       overlayColor: MaterialStateColor.resolveWith(
-                          (states) => Colors.black),
+                          (states) => Colors.white),
                       backgroundColor: MaterialStateColor.resolveWith(
-                          (states) => Color.fromARGB(255, 218, 218, 218))),
+                          (states) => Colors.black)),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -287,11 +324,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   icon: Icon(
                     Icons.add,
-                    color: Colors.black,
+                    color: Colors.white,
                   ),
                   label: Text(
                     "Add Task",
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(color: Colors.white),
                   )),
               SizedBox(
                 width: 10,
@@ -301,82 +338,71 @@ class _HomeScreenState extends State<HomeScreen> {
           SizedBox(
             height: 10,
           ),
-          Expanded(
-            child: SizedBox(
-              height: h - 390,
-              width: w,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                physics: BouncingScrollPhysics(),
-                child: Column(
-                  children: [
-                    TaskItem(
-                      icon: Icon(
-                        Icons.fitness_center,
-                        color: Color.fromARGB(255, 195, 150, 205),
+          isLoading
+              ? Expanded(
+                  child: Shimmer.fromColors(
+                    baseColor: Color.fromARGB(255, 120, 110, 198),
+                    highlightColor: Color.fromARGB(255, 2, 36, 37),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: 8,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              dummyShimmer(60, 60),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  dummyShimmer(20, 260),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                  dummyShimmer(20, 230),
+                                ],
+                              )
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                )
+              : Expanded(
+                  child: SizedBox(
+                    height: h - 390,
+                    width: w,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      physics: BouncingScrollPhysics(),
+                      child: Column(
+                        children: [
+                          for (var activity in activities)
+                            TaskItem(
+                              activity: activity,
+                              onChecked: incrementCounter,
+                            ),
+                        ],
                       ),
-                      color: Color.fromARGB(255, 195, 150, 205),
-                      desc: "Morning Workout",
-                      priority: "High",
-                      onChecked: incrementCounter,
-                      title: "Workout",
                     ),
-                    TaskItem(
-                      icon: Icon(
-                        Icons.book,
-                        color: Color.fromARGB(255, 244, 190, 186),
-                      ),
-                      color: Color.fromARGB(255, 244, 190, 186),
-                      desc: "Coding",
-                      onChecked: incrementCounter,
-                      priority: "Medium",
-                      title: "Study",
-                    ),
-                    TaskItem(
-                      icon: Icon(
-                        Icons.book,
-                        color: Color.fromARGB(255, 126, 173, 202),
-                      ),
-                      color: Color.fromARGB(255, 126, 173, 202),
-                      desc: "College work",
-                      priority: "Low",
-                      onChecked: incrementCounter,
-                      title: "Study",
-                    ),
-                    TaskItem(
-                      icon: Icon(
-                        Icons.fitness_center,
-                        color: Color.fromARGB(255, 145, 232, 148),
-                      ),
-                      color: Color.fromARGB(255, 145, 232, 148),
-                      desc: "Morning Workout",
-                      priority: "High",
-                      onChecked: incrementCounter,
-                      title: "Workout",
-                    ),
-                    TaskItem(
-                      icon: Icon(Icons.book, color: Colors.red),
-                      color: Colors.red,
-                      desc: "Coding",
-                      onChecked: incrementCounter,
-                      priority: "Medium",
-                      title: "Study",
-                    ),
-                    TaskItem(
-                      icon: Icon(Icons.book, color: Colors.green),
-                      color: Colors.green,
-                      desc: "College work",
-                      priority: "Low",
-                      onChecked: incrementCounter,
-                      title: "Study",
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          ),
         ],
       ),
     );
   }
+}
+
+Widget dummyShimmer(double h, double w) {
+  return Container(
+    height: h,
+    width: w,
+    decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(10)),
+  );
 }

@@ -32,7 +32,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
           body: jsonEncode(regBody),
           headers: {"content-Type": "application/json"});
       if (res.statusCode == 200) {
-        showSnackBar(context, "Registered successfully");
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => LoginScreen()),

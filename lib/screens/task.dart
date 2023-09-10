@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import 'package:steady_streak/screens/home_screen.dart';
 import 'package:steady_streak/utils/colors.dart';
 import 'package:steady_streak/utils/config.dart';
 import 'package:steady_streak/widgets/color_selector.dart';
@@ -54,7 +55,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     );
 
     if (response.statusCode == 200) {
-      print('Activity added successfully');
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen(email: email)),
+      );
     } else {
       print('Failed to add activity: ${response.body}');
     }

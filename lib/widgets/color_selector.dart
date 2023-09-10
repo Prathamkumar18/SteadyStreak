@@ -18,7 +18,7 @@ class _ColorSelectorState extends State<ColorSelector> {
     Color.fromARGB(255, 145, 232, 148),
     Color.fromARGB(255, 232, 220, 127),
     Color.fromARGB(255, 195, 150, 205),
-    Color.fromARGB(255, 225, 189, 135),
+    Color.fromRGBO(225, 189, 135, 1),
   ];
 
   double selectedSize = 50.0;
