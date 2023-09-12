@@ -29,27 +29,57 @@ class _HomeScreenState extends State<HomeScreen> {
   int c = 0;
   int total = 0;
 
-  void incrementCounter(bool isChecked) {
-    setState(() {
-      if (isChecked) {
-        c++;
-      } else {
-        c--;
-      }
-    });
+  int countCompletedTasks(List<Activity> activities) {
+    return activities.where((activity) => activity.isChecked).length;
   }
 
-  Future<List<Activity>> fetchActivities() async {
+  Future<void> fetchActivities() async {
     final response = await http.get(
         Uri.parse('http://10.0.2.2:8082/user/${widget.email}/all-activities'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body)['activities'];
-      List<Activity> activities =
+      List<Activity> fetchedActivities =
           data.map((json) => Activity.fromJson(json)).toList();
-      return activities;
+      setState(() {
+        activities = fetchedActivities;
+        isLoading = false;
+        total = activities.length;
+        c = countCompletedTasks(activities);
+      });
     } else {
       throw Exception('Failed to fetch activities');
+    }
+  }
+
+  Future<void> updateTaskStatus(String title, bool isChecked) async {
+    final String updateActivityStatus =
+        'http://10.0.2.2:8082/user/update-activity-status';
+    final url = Uri.parse(updateActivityStatus);
+    final response = await http.put(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'email': widget.email,
+        'title': title,
+        'isChecked': isChecked,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      // Update the task status in the local list
+      setState(() {
+        final updatedActivity = activities.firstWhere(
+          (activity) => activity.title == title,
+        );
+        updatedActivity.isChecked = isChecked;
+        // Update completed task count
+        c = countCompletedTasks(activities);
+      });
+    } else {
+      print('Failed to update task status');
     }
   }
 
@@ -89,15 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     retrieveUserName();
-    fetchActivities().then((fetchedActivities) {
-      Future.delayed(Duration(seconds: 2), () {
-        setState(() {
-          activities = fetchedActivities;
-          isLoading = false;
-          total = activities.length;
-        });
-      });
-    });
+    fetchActivities();
   }
 
   @override
@@ -113,208 +135,217 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-              height: 260,
-              width: w,
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(20),
-                      bottomRight: Radius.circular(20))),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            height: 260,
+            width: w,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     SizedBox(
-                      height: 20,
+                      width: 5,
                     ),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Text(
-                            "Welcome Back!!!",
-                            style: GoogleFonts.hahmlet(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 30,
-                                color: Colors.black),
-                          ),
-                          Spacer(),
-                          Column(
-                            children: [
-                              Text(
-                                date,
-                                style: GoogleFonts.abhayaLibre(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 10,
-                                    color: Colors.black),
-                              ),
-                              Text(
-                                day,
-                                style: GoogleFonts.abhayaLibre(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 10,
-                                    color: Colors.black),
-                              ),
-                            ],
-                          ),
-                          Icon(
-                            Icons.date_range,
-                            color: Colors.grey,
-                          )
-                        ]),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 5.0),
-                      child: Text(
-                        userName,
-                        style: GoogleFonts.raleway(
+                    Text(
+                      "Welcome Back!!!",
+                      style: GoogleFonts.hahmlet(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Spacer(),
+                    Column(
+                      children: [
+                        Text(
+                          date,
+                          style: GoogleFonts.abhayaLibre(
                             fontWeight: FontWeight.bold,
-                            fontSize: 30,
-                            color: Colors.grey),
-                      ),
+                            fontSize: 10,
+                            color: Colors.black,
+                          ),
+                        ),
+                        Text(
+                          day,
+                          style: GoogleFonts.abhayaLibre(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 10,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(
-                      height: 10,
+                    Icon(
+                      Icons.date_range,
+                      color: Colors.grey,
+                    )
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 5.0),
+                  child: Text(
+                    userName,
+                    style: GoogleFonts.raleway(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30,
+                      color: Colors.grey,
                     ),
-                    Center(
-                      child: Container(
-                        margin: EdgeInsets.all(2),
-                        height: 100,
-                        width: w * 0.95,
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black, width: 0.5),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(20))),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Text(
-                                    total.toString(),
-                                    style: GoogleFonts.raleway(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 50,
-                                        color: const Color.fromARGB(
-                                            255, 140, 189, 230)),
-                                  ),
-                                  Text(
-                                    "Total Task",
-                                    style: GoogleFonts.davidLibre(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20,
-                                        color: Colors.black),
-                                  ),
-                                ],
-                              ),
-                              VerticalDivider(
-                                indent: 10,
-                                endIndent: 10,
-                                thickness: 0.5,
-                                color: Colors.grey,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Text(
-                                    c.toString(),
-                                    style: GoogleFonts.raleway(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 50,
-                                        color:
-                                            Color.fromARGB(255, 124, 190, 126)),
-                                  ),
-                                  Text(
-                                    "Completed Task",
-                                    style: GoogleFonts.davidLibre(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20,
-                                        color: Colors.black),
-                                  ),
-                                ],
-                              ),
-                              VerticalDivider(
-                                indent: 10,
-                                endIndent: 10,
-                                thickness: 0.5,
-                                color: Colors.grey,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Text(
-                                    (total - c).toString(),
-                                    style: GoogleFonts.raleway(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 50,
-                                        color:
-                                            Color.fromARGB(255, 230, 129, 119)),
-                                  ),
-                                  Text(
-                                    "To Do",
-                                    style: GoogleFonts.davidLibre(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20,
-                                        color: Colors.black),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                            ]),
-                      ),
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Center(
+                  child: Container(
+                    margin: EdgeInsets.all(2),
+                    height: 100,
+                    width: w * 0.95,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black, width: 0.5),
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
-                    Center(
-                      child: Container(
-                        margin: EdgeInsets.only(top: 10, bottom: 10),
-                        width: 340,
-                        child: Stack(
-                          alignment: Alignment.center,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(20.0),
-                              child: LinearProgressIndicator(
-                                minHeight: 15,
-                                backgroundColor: Colors.grey,
-                                valueColor:
-                                    AlwaysStoppedAnimation<Color>(Colors.black),
-                                value: (total == 0) ? 0 : c / total,
+                            Text(
+                              total.toString(),
+                              style: GoogleFonts.raleway(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 50,
+                                color: const Color.fromARGB(255, 140, 189, 230),
                               ),
                             ),
                             Text(
-                              (total == 0)
-                                  ? '0'
-                                  : '${(c / total * 100).toInt()}%',
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: bg,
+                              "Total Task",
+                              style: GoogleFonts.davidLibre(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: Colors.black,
                               ),
                             ),
                           ],
                         ),
-                      ),
+                        VerticalDivider(
+                          indent: 10,
+                          endIndent: 10,
+                          thickness: 0.5,
+                          color: Colors.grey,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(
+                              c.toString(),
+                              style: GoogleFonts.raleway(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 50,
+                                color: Color.fromARGB(255, 124, 190, 126),
+                              ),
+                            ),
+                            Text(
+                              "Completed Task",
+                              style: GoogleFonts.davidLibre(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                        VerticalDivider(
+                          indent: 10,
+                          endIndent: 10,
+                          thickness: 0.5,
+                          color: Colors.grey,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(
+                              (total - c).toString(),
+                              style: GoogleFonts.raleway(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 50,
+                                color: Color.fromARGB(255, 230, 129, 119),
+                              ),
+                            ),
+                            Text(
+                              "To Do",
+                              style: GoogleFonts.davidLibre(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                      ],
                     ),
-                    Center(
-                      child: Container(
-                        height: 5,
-                        width: 80,
-                        decoration: BoxDecoration(
-                            color: Color.fromARGB(255, 71, 71, 71),
-                            borderRadius: BorderRadius.circular(30)),
-                      ),
-                    )
-                  ])),
+                  ),
+                ),
+                Center(
+                  child: Container(
+                    margin: EdgeInsets.only(top: 10, bottom: 10),
+                    width: 340,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(20.0),
+                          child: LinearProgressIndicator(
+                            minHeight: 15,
+                            backgroundColor: Colors.grey,
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.black),
+                            value: (total == 0) ? 0 : c / total,
+                          ),
+                        ),
+                        Text(
+                          (total == 0) ? '0' : '${(c / total * 100).toInt()}%',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: bg,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Center(
+                  child: Container(
+                    height: 5,
+                    width: 80,
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 71, 71, 71),
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
           SizedBox(height: 5),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -325,34 +356,41 @@ class _HomeScreenState extends State<HomeScreen> {
               Text(
                 "Today's Task",
                 style: GoogleFonts.asap(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30,
-                    color: Color.fromARGB(255, 244, 254, 255)),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 30,
+                  color: Color.fromARGB(255, 244, 254, 255),
+                ),
               ),
               Spacer(),
               ElevatedButton.icon(
-                  style: ButtonStyle(
-                      overlayColor: MaterialStateColor.resolveWith(
-                          (states) => Colors.black),
-                      backgroundColor: MaterialStateColor.resolveWith(
-                          (states) => Colors.white)),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AddTaskScreen(
-                                email: widget.email,
-                              )),
-                    );
-                  },
-                  icon: Icon(
-                    Icons.add,
-                    color: Colors.black,
+                style: ButtonStyle(
+                  overlayColor: MaterialStateColor.resolveWith(
+                    (states) => Colors.black,
                   ),
-                  label: Text(
-                    "Add Task",
-                    style: TextStyle(color: Colors.black),
-                  )),
+                  backgroundColor: MaterialStateColor.resolveWith(
+                    (states) => Colors.white,
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddTaskScreen(
+                        email: widget.email,
+                        onTaskAdded: fetchActivities,
+                      ),
+                    ),
+                  );
+                },
+                icon: Icon(
+                  Icons.add,
+                  color: Colors.black,
+                ),
+                label: Text(
+                  "Add Task",
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
               SizedBox(
                 width: 10,
               ),
@@ -407,9 +445,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           for (var activity in activities)
                             TaskItem(
                               activity: activity,
-                              onChecked: incrementCounter,
                               onDelete: () {
                                 deleteTask(widget.email, activity.title);
+                              },
+                              onUpdateStatus: (isChecked) {
+                                updateTaskStatus(activity.title, isChecked);
                               },
                             ),
                         ],
@@ -428,7 +468,8 @@ Widget dummyShimmer(double h, double w) {
     height: h,
     width: w,
     decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(10)),
+      color: Colors.black.withOpacity(0.1),
+      borderRadius: BorderRadius.circular(10),
+    ),
   );
 }

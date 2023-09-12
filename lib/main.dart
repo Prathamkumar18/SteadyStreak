@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:steady_streak/screens/login_screen.dart';
 import 'package:steady_streak/screens/nav_bar.dart';
 
 void main() {
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'SteadyStreak',
         home: BottomNav(
-          email: "abc@gmail.com",
+          email: "p@gmail.com",
         ));
   }
 }

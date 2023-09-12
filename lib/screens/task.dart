@@ -1,8 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+
 import 'package:steady_streak/screens/home_screen.dart';
 import 'package:steady_streak/utils/colors.dart';
 import 'package:steady_streak/utils/config.dart';
@@ -14,9 +16,11 @@ import 'package:steady_streak/widgets/yes_no_selector.dart';
 
 class AddTaskScreen extends StatefulWidget {
   String email;
+  final Function onTaskAdded;
   AddTaskScreen({
     Key? key,
     required this.email,
+    required this.onTaskAdded,
   }) : super(key: key);
 
   @override
@@ -46,23 +50,25 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   }
 
   Future<void> addActivity(
-      String email, Map<String, dynamic> activityData) async {
-    final url = Uri.parse('$addTask/$email');
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode(activityData),
-    );
+  String email, Map<String, dynamic> activityData) async {
+  final url = Uri.parse('$addTask/$email');
+  final response = await http.post(
+    url,
+    headers: {'Content-Type': 'application/json'},
+    body: json.encode(activityData),
+  );
 
-    if (response.statusCode == 200) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => HomeScreen(email: email)),
-      );
-    } else {
-      print('Failed to add activity: ${response.body}');
-    }
+  if (response.statusCode == 200) {
+    widget.onTaskAdded();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HomeScreen(email: email)),
+    );
+  } else {
+    print('Failed to add activity: ${response.body}');
   }
+}
+
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -6,13 +5,14 @@ import 'package:steady_streak/activity.dart';
 
 class TaskItem extends StatefulWidget {
   final Activity activity;
-  final ValueChanged<bool> onChecked;
   final VoidCallback onDelete;
+  final ValueChanged<bool> onUpdateStatus;
+
   TaskItem({
     Key? key,
     required this.activity,
-    required this.onChecked,
     required this.onDelete,
+    required this.onUpdateStatus,
   }) : super(key: key);
 
   @override
@@ -20,15 +20,11 @@ class TaskItem extends StatefulWidget {
 }
 
 class _TaskItemState extends State<TaskItem> {
-  bool isChecked = false;
-
   @override
   Widget build(BuildContext context) {
-    var w = MediaQuery.of(context).size.width;
     return Container(
       height: 100,
       margin: EdgeInsets.only(top: 5, left: 10, right: 10),
-      width: w - 20,
       decoration: BoxDecoration(
         color: Colors.black,
         border: Border.all(
@@ -133,21 +129,20 @@ class _TaskItemState extends State<TaskItem> {
                     Transform.scale(
                       scale: 1.4,
                       child: Theme(
-                        data: ThemeData(
-                          unselectedWidgetColor:
-                              _parseColor(widget.activity.color),
-                        ),
-                        child: Checkbox(
-                          activeColor: Colors.green,
-                          value: isChecked,
-                          onChanged: (bool? newValue) {
-                            setState(() {
-                              isChecked = newValue!;
-                              widget.onChecked(isChecked);
-                            });
-                          },
-                        ),
-                      ),
+                          data: ThemeData(
+                            unselectedWidgetColor:
+                                _parseColor(widget.activity.color),
+                          ),
+                          child: Checkbox(
+                            activeColor: Colors.green,
+                            value: widget.activity.isChecked,
+                            onChanged: (bool? newValue) {
+                              setState(() {
+                                widget.activity.isChecked = newValue!;
+                                widget.onUpdateStatus(newValue);
+                              });
+                            },
+                          )),
                     ),
                     IconButton(
                       icon: Icon(
@@ -212,8 +207,8 @@ class _TaskItemState extends State<TaskItem> {
   IconData _getIconDataForActivity(String iconString) {
     if (iconString.startsWith('IconData(U+')) {
       final hexString = iconString.substring(11, iconString.length - 1);
-      final int codePoint = int.tryParse(hexString, radix: 16) ?? 0;
-      return IconData(codePoint, fontFamily: 'MaterialIcons');
+      final intCodePoint = int.tryParse(hexString, radix: 16) ?? 0;
+      return IconData(intCodePoint, fontFamily: 'MaterialIcons');
     }
     return Icons.error;
   }
