@@ -8,6 +8,7 @@ import 'package:steady_streak/screens/task.dart';
 import 'package:steady_streak/utils/colors.dart';
 import 'package:steady_streak/utils/config.dart';
 import 'package:steady_streak/widgets/task_item.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../activity.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -115,11 +116,69 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  // Function to check if it's a new day
+  bool isNewDay(String lastDate) {
+    final currentDate = DateTime.now();
+    final lastDateTime = DateTime.parse(lastDate);
+    return currentDate.day != lastDateTime.day ||
+        currentDate.month != lastDateTime.month ||
+        currentDate.year != lastDateTime.year;
+  }
+
+  Future<void> saveLastScheduledDate() async {
+    final preferences = await SharedPreferences.getInstance();
+    final currentDate = DateTime.now().toIso8601String();
+    await preferences.setString('lastScheduledDate', currentDate);
+  }
+
+  Future<String?> getLastScheduledDate() async {
+    final preferences = await SharedPreferences.getInstance();
+    return preferences.getString('lastScheduledDate');
+  }
+
+  Future<void> scheduleDailyUpdateIfNeeded() async {
+    final lastScheduledDate = await getLastScheduledDate();
+
+    if (lastScheduledDate == null || isNewDay(lastScheduledDate)) {
+      await scheduleDailyUpdate();
+
+      await saveLastScheduledDate();
+    }
+  }
+
+  Future<void> scheduleDailyUpdate() async {
+    final url = Uri.parse('http://10.0.2.2:8082/user/schedule-daily-update');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, dynamic>{
+          'email': widget.email,
+          'date': DateTime.now().toIso8601String(),
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final responseBody = json.decode(response.body);
+        final message = responseBody['message'];
+        print(message);
+      } else {
+        print('Failed to schedule daily update');
+      }
+    } catch (error) {
+      print('Error scheduling daily update: $error');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     retrieveUserName();
     fetchActivities();
+    scheduleDailyUpdateIfNeeded();
   }
 
   @override
@@ -353,12 +412,17 @@ class _HomeScreenState extends State<HomeScreen> {
               SizedBox(
                 width: 10,
               ),
-              Text(
-                "Today's Task",
-                style: GoogleFonts.asap(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 30,
-                  color: Color.fromARGB(255, 244, 254, 255),
+              InkWell(
+                onTap: () {
+                  fetchActivities();
+                },
+                child: Text(
+                  "Today's Task",
+                  style: GoogleFonts.asap(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                    color: Color.fromARGB(255, 244, 254, 255),
+                  ),
                 ),
               ),
               Spacer(),

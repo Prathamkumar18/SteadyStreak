@@ -40,7 +40,7 @@ dependencies:
   intl: ^0.17.0
   fl_chart: 
   google_fonts: 
-  glassmorphism: 
+  shared_preferences: 
   shimmer: 
   http: 
 
