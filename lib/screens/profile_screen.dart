@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:steady_streak/screens/login_screen.dart';
 import 'package:steady_streak/utils/colors.dart';
 import 'package:steady_streak/utils/config.dart';
 
@@ -76,6 +78,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  Future<void> deleteSharedPreferences(String email) async {
+    final preferences = await SharedPreferences.getInstance();
+    await preferences.remove(email);
+  }
+
+  Future<void> deleteAccount() async {
+    final apiUrl = 'http://10.0.2.2:8082/user/delete-account/${widget.email}';
+    final response = await http.delete(Uri.parse(apiUrl));
+    if (response.statusCode == 200) {
+      deleteSharedPreferences(widget.email);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
+      print('Account deleted successfully');
+    } else {
+      print('Failed to delete account');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -141,7 +163,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               MaterialStateColor.resolveWith((states) => bg),
                           backgroundColor: MaterialStateColor.resolveWith(
                               (states) => Colors.black)),
-                      onPressed: () {},
+                      onPressed: () {
+                        deleteAccount();
+                      },
                       icon: Icon(
                         Icons.delete_outline,
                         color: Colors.red,

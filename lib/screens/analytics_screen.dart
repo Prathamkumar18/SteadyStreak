@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
-void main() {
-  runApp(MaterialApp(
-    home: AnalyticsScreen(),
-  ));
-}
-
 class AnalyticsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -17,6 +11,8 @@ class AnalyticsScreen extends StatelessWidget {
       body: ListView(
         padding: EdgeInsets.all(16.0),
         children: [
+
+
           // Line Chart
           Container(
             height: 300,
@@ -149,5 +145,4 @@ final List<PointData> dataPoints = [
   PointData(DateTime(2023, 9, 3), 4),
   PointData(DateTime(2023, 9, 4), 7),
   PointData(DateTime(2023, 9, 5), 2),
-  // Add more data points here.
 ];
