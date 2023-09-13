@@ -415,6 +415,7 @@ class _HomeScreenState extends State<HomeScreen> {
               InkWell(
                 onTap: () {
                   fetchActivities();
+                  retrieveUserName();
                 },
                 child: Text(
                   "Today's Task",

@@ -42,6 +42,7 @@ dependencies:
   google_fonts: 
   shared_preferences: 
   shimmer: 
+  jwt_decoder: 
   http: 
 
 dev_dependencies:

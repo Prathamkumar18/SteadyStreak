@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:steady_streak/screens/forgot_password_screen.dart';
 import 'package:steady_streak/screens/nav_bar.dart';
 import 'package:steady_streak/screens/signup_screen.dart';
@@ -20,6 +21,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   bool passwordVisible = false;
+  late SharedPreferences prefs;
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -33,23 +35,37 @@ class _LoginScreenState extends State<LoginScreen> {
       var res = await http.post(Uri.parse(login),
           body: jsonEncode(regBody),
           headers: {"content-Type": "application/json"});
+      var jsonResponse = jsonDecode(res.body);
+
       if (res.statusCode == 200) {
+        var myToken = jsonResponse['token'];
+        prefs.setString('token', myToken);
         showSnackBar(context, "Logged in successfully.");
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) =>
-                BottomNav(email: emailController.text.toString()),
+            builder: (context) => BottomNav(
+              token: myToken,
+            ),
           ),
         );
       } else {
-        var jsonResponse = jsonDecode(res.body);
         String resMessage = jsonResponse["message"].toString();
         showSnackBar(context, resMessage);
       }
     } else {
       showSnackBar(context, "Enter valid Credentials");
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initSharedPref();
+  }
+
+  void initSharedPref() async {
+    prefs = await SharedPreferences.getInstance();
   }
 
   @override

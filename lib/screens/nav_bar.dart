@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 
 import 'package:steady_streak/screens/home_screen.dart';
@@ -9,10 +10,10 @@ import 'package:steady_streak/screens/profile_screen.dart';
 import 'analytics_screen.dart';
 
 class BottomNav extends StatefulWidget {
-  String email;
-   BottomNav({
+  final token;
+  BottomNav({
     Key? key,
-    required this.email,
+    required this.token,
   }) : super(key: key);
 
   @override
@@ -20,13 +21,27 @@ class BottomNav extends StatefulWidget {
 }
 
 class _BottomNavState extends State<BottomNav> {
+  late String email;
   PersistentTabController _controller =
       PersistentTabController(initialIndex: 1);
 
-      
-List<Widget> _buildScreens() {
-  return [AnalyticsScreen(), HomeScreen(email: widget.email), ProfileScreen()];
-}
+  List<Widget> _buildScreens() {
+    return [
+      AnalyticsScreen(),
+      HomeScreen(email: email),
+      ProfileScreen(
+        email: email,
+      )
+    ];
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Map<String, dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
+    email = jwtDecodedToken['email'];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,7 +70,6 @@ List<Widget> _buildScreens() {
     );
   }
 }
-
 
 List<PersistentBottomNavBarItem> _navBarsItems() {
   return [

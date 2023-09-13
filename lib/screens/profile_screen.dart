@@ -1,10 +1,15 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:steady_streak/utils/colors.dart';
+import 'package:steady_streak/utils/config.dart';
 
 class ProfileScreen extends StatefulWidget {
+  final email;
   const ProfileScreen({
     Key? key,
+    required this.email,
   }) : super(key: key);
 
   @override
@@ -17,6 +22,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController username = TextEditingController();
   TextEditingController email = TextEditingController();
   String uname = "";
+
+  Future<void> updateUsername(String newUsername) async {
+    final response = await http.put(
+      Uri.parse('http://10.0.2.2:8082/user/update-username/${widget.email}'),
+      body: jsonEncode({"newUsername": newUsername}),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      print('Username updated successfully');
+      setState(() {
+        uname = newUsername;
+        onTapNameEdit = false;
+        retrieveUserName();
+      });
+    } else {
+      print('Failed to update username');
+    }
+  }
+
+  Future<void> retrieveUserName() async {
+    final response = await http.get(
+      Uri.parse('$getUserNameByEmail/${widget.email}'),
+    );
+    final responseBody = json.decode(response.body);
+    setState(() {
+      uname = responseBody['name'];
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    retrieveUserName();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +79,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       color: Colors.grey),
                 ),
                 SizedBox(height: 10),
-                TextIcon("Pratham", Icon(Icons.edit), 28),
+                TextIcon(uname, Icon(Icons.edit), 28),
                 SizedBox(height: 10),
                 if (onTapNameEdit)
                   EditBox("Username", Icon(Icons.person), username),
@@ -156,7 +198,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       backgroundColor: MaterialStateProperty.all(Colors.black)),
                   onPressed: () {
                     if (text == "Email") {
-                    } else {}
+                    } else {
+                      final newUsername = username.text;
+                      updateUsername(newUsername);
+                    }
                   },
                   child: Text((text == "Email") ? "reset" : "save",
                       style: TextStyle(fontSize: 20, color: Colors.white))),
