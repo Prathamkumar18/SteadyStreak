@@ -10,5 +10,3 @@ showSnackBar(BuildContext context, String text) {
             topLeft: Radius.circular(20), topRight: Radius.circular(20))),
   ));
 }
-
-

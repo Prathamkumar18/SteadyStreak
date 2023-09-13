@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:steady_streak/utils/colors.dart';
 import 'package:steady_streak/utils/config.dart';
 
+import '../utils/utils.dart';
+
 class ProfileScreen extends StatefulWidget {
   final email;
   const ProfileScreen({
@@ -20,7 +22,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool onTapNameEdit = false;
   bool onTapPasswordEdit = false;
   TextEditingController username = TextEditingController();
-  TextEditingController email = TextEditingController();
+  TextEditingController password = TextEditingController();
   String uname = "";
 
   Future<void> updateUsername(String newUsername) async {
@@ -33,7 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
 
     if (response.statusCode == 200) {
-      print('Username updated successfully');
+      showSnackBar(context, 'Username updated successfully');
       setState(() {
         uname = newUsername;
         onTapNameEdit = false;
@@ -52,6 +54,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {
       uname = responseBody['name'];
     });
+  }
+
+  Future<void> updatePassword(String newPassword) async {
+    final apiUrl = 'http://10.0.2.2:8082/user/update-password/${widget.email}';
+
+    final response = await http.put(
+      Uri.parse(apiUrl),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({"newPassword": newPassword}),
+    );
+    if (response.statusCode == 200) {
+      setState(() {
+        onTapPasswordEdit = false;
+      });
+      print('Password updated successfully');
+    } else {
+      print('Failed to update password');
+    }
   }
 
   @override
@@ -90,7 +112,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 TextIcon("Change Password ?", Icon(Icons.edit), 30),
                 SizedBox(height: 10),
                 if (onTapPasswordEdit)
-                  EditBox("Email", Icon(Icons.email), email),
+                  EditBox("Password", Icon(Icons.password), password),
                 Divider(
                   thickness: 0.5,
                   color: Colors.grey,
@@ -197,7 +219,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(Colors.black)),
                   onPressed: () {
-                    if (text == "Email") {
+                    if (text == "Password") {
+                      final newPassword = password.text;
+                      updatePassword(newPassword);
                     } else {
                       final newUsername = username.text;
                       updateUsername(newUsername);
