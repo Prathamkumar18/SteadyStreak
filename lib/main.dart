@@ -24,8 +24,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'SteadyStreak',
-       home: (token == null || JwtDecoder.isExpired(token))
-  ? LoginScreen()
-  : BottomNav(token: token));
+        home: (token == null || JwtDecoder.isExpired(token))
+            ? LoginScreen()
+            : BottomNav(token: token));
   }
 }
