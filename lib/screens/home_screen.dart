@@ -30,6 +30,17 @@ class _HomeScreenState extends State<HomeScreen> {
   int c = 0;
   int total = 0;
 
+  List<Activity> sortActivitiesByPriority(List<Activity> activities) {
+    activities.sort((a, b) {
+      final priorityValues = {'High': 3, 'Medium': 2, 'Low': 1};
+      final priorityA = priorityValues[a.priority];
+      final priorityB = priorityValues[b.priority];
+      return priorityB!.compareTo(priorityA!);
+    });
+
+    return activities;
+  }
+
   int countCompletedTasks(List<Activity> activities) {
     return activities.where((activity) => activity.isChecked).length;
   }
@@ -188,6 +199,7 @@ class _HomeScreenState extends State<HomeScreen> {
     String day = DateFormat('EEEE').format(now);
     var w = MediaQuery.of(context).size.width;
     var h = MediaQuery.of(context).size.height;
+    activities = sortActivitiesByPriority(activities);
     return Scaffold(
       backgroundColor: Colors.black,
       body: Column(
