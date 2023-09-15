@@ -9,12 +9,13 @@ import 'package:steady_streak/utils/colors.dart';
 import 'package:steady_streak/utils/config.dart';
 import 'package:steady_streak/widgets/task_item.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../activity.dart';
+import '../models/activity.dart';
+import '../services/methods.dart';
 
 class HomeScreen extends StatefulWidget {
-  String email;
+  final String email;
 
-  HomeScreen({
+  const HomeScreen({
     Key? key,
     required this.email,
   }) : super(key: key);
@@ -29,21 +30,6 @@ class _HomeScreenState extends State<HomeScreen> {
   String userName = "";
   int c = 0;
   int total = 0;
-
-  List<Activity> sortActivitiesByPriority(List<Activity> activities) {
-    activities.sort((a, b) {
-      final priorityValues = {'High': 3, 'Medium': 2, 'Low': 1};
-      final priorityA = priorityValues[a.priority];
-      final priorityB = priorityValues[b.priority];
-      return priorityB!.compareTo(priorityA!);
-    });
-
-    return activities;
-  }
-
-  int countCompletedTasks(List<Activity> activities) {
-    return activities.where((activity) => activity.isChecked).length;
-  }
 
   Future<void> fetchActivities() async {
     final response = await http.get(
@@ -65,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> updateTaskStatus(String title, bool isChecked) async {
-    final String updateActivityStatus =
+    const String updateActivityStatus =
         'http://10.0.2.2:8082/user/update-activity-status';
     final url = Uri.parse(updateActivityStatus);
     final response = await http.put(
@@ -125,7 +111,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // Function to check if it's a new day
   bool isNewDay(String lastDate) {
     final currentDate = DateTime.now();
     final lastDateTime = DateTime.parse(lastDate);
@@ -157,7 +142,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> scheduleDailyUpdate() async {
     final url = Uri.parse('http://10.0.2.2:8082/user/schedule-daily-update');
-
     try {
       final response = await http.post(
         url,
@@ -199,7 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
     var h = MediaQuery.of(context).size.height;
     activities = sortActivitiesByPriority(activities);
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: black,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -207,7 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
             height: 260,
             width: w,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: tintWhite,
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20),
@@ -230,7 +214,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: GoogleFonts.hahmlet(
                         fontWeight: FontWeight.bold,
                         fontSize: 30,
-                        color: Colors.black,
+                        color: black,
                       ),
                     ),
                     Spacer(),
@@ -241,7 +225,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: GoogleFonts.abhayaLibre(
                             fontWeight: FontWeight.bold,
                             fontSize: 10,
-                            color: Colors.black,
+                            color: black,
                           ),
                         ),
                         Text(
@@ -249,7 +233,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: GoogleFonts.abhayaLibre(
                             fontWeight: FontWeight.bold,
                             fontSize: 10,
-                            color: Colors.black,
+                            color: black,
                           ),
                         ),
                       ],
@@ -263,8 +247,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 Padding(
                   padding: const EdgeInsets.only(left: 5.0),
                   child: Text(
-                    userName.substring(0, 1).toUpperCase() +
-                        userName.substring(1),
+                    (userName.isEmpty)
+                        ? ""
+                        : userName.substring(0, 1).toUpperCase() +
+                            userName.substring(1),
                     style: GoogleFonts.raleway(
                       fontWeight: FontWeight.bold,
                       fontSize: 30,
@@ -281,7 +267,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 100,
                     width: w * 0.95,
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black, width: 0.5),
+                      border: Border.all(color: black, width: 0.5),
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
                     child: Row(
@@ -307,7 +293,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               style: GoogleFonts.davidLibre(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20,
-                                color: Colors.black,
+                                color: black,
                               ),
                             ),
                           ],
@@ -335,7 +321,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               style: GoogleFonts.davidLibre(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20,
-                                color: Colors.black,
+                                color: black,
                               ),
                             ),
                           ],
@@ -363,7 +349,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               style: GoogleFonts.davidLibre(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20,
-                                color: Colors.black,
+                                color: black,
                               ),
                             ),
                           ],
@@ -387,8 +373,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: LinearProgressIndicator(
                             minHeight: 15,
                             backgroundColor: Colors.grey,
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.black),
+                            valueColor: AlwaysStoppedAnimation<Color>(black),
                             value: (total == 0) ? 0 : c / total,
                           ),
                         ),
@@ -396,7 +381,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           (total == 0) ? '0' : '${(c / total * 100).toInt()}%',
                           style: TextStyle(
                             fontSize: 13,
-                            color: bg,
+                            color: tintWhite,
                           ),
                         ),
                       ],
@@ -441,10 +426,10 @@ class _HomeScreenState extends State<HomeScreen> {
               ElevatedButton.icon(
                 style: ButtonStyle(
                   overlayColor: MaterialStateColor.resolveWith(
-                    (states) => Colors.black,
+                    (states) => black,
                   ),
                   backgroundColor: MaterialStateColor.resolveWith(
-                    (states) => Colors.white,
+                    (states) => white,
                   ),
                 ),
                 onPressed: () {
@@ -460,11 +445,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
                 icon: Icon(
                   Icons.add,
-                  color: Colors.black,
+                  color: black,
                 ),
                 label: Text(
                   "Add Task",
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(color: black),
                 ),
               ),
               SizedBox(
@@ -544,7 +529,7 @@ Widget dummyShimmer(double h, double w) {
     height: h,
     width: w,
     decoration: BoxDecoration(
-      color: Colors.black.withOpacity(0.1),
+      color: black.withOpacity(0.1),
       borderRadius: BorderRadius.circular(10),
     ),
   );

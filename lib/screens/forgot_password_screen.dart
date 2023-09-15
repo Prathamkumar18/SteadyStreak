@@ -14,6 +14,7 @@ class ForgotPasswordScreen extends StatefulWidget {
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
+
   @override
   void dispose() {
     super.dispose();
@@ -24,9 +25,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   Widget build(BuildContext context) {
     var h = MediaQuery.of(context).size.height;
     var w = MediaQuery.of(context).size.width;
-    SystemUiOverlayStyle(statusBarColor: bg);
+    SystemUiOverlayStyle(statusBarColor: background);
     return Scaffold(
-        backgroundColor: bg,
+        backgroundColor: background,
         body: SingleChildScrollView(
             physics: BouncingScrollPhysics(),
             child:
@@ -48,7 +49,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 padding: const EdgeInsets.only(left: 20.0),
                 child: Text("Forgot",
                     style: TextStyle(
-                        color: Colors.black,
+                        color: black,
                         fontSize: 40,
                         fontWeight: FontWeight.bold)),
               ),
@@ -56,7 +57,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 padding: const EdgeInsets.only(left: 20.0),
                 child: Text("Password?",
                     style: TextStyle(
-                        color: Colors.black,
+                        color: black,
                         fontSize: 40,
                         fontWeight: FontWeight.bold)),
               ),
@@ -111,13 +112,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 child: CustomButton(
                   text: "Submit",
                   image: false,
-                  textColor: Colors.white,
+                  textColor: white,
                   color: Colors.blue,
                   onPressed: () {
-                    if (emailController.text.length != 0)
+                    if (emailController.text.isNotEmpty) {
                       showSnackBar(context,
                           "You will recieve a mail to reset your password.");
-                    else {
+                    } else {
                       showSnackBar(context, "Please enter correct Email ID");
                     }
                   },

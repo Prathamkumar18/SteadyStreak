@@ -1,18 +1,17 @@
-
 import 'package:flutter/material.dart';
 
 class PrioritySelector extends StatefulWidget {
   final ValueChanged<String?> onPrioritySelected;
 
-  PrioritySelector({required this.onPrioritySelected});
+  const PrioritySelector({super.key, required this.onPrioritySelected});
 
   @override
+  // ignore: library_private_types_in_public_api
   _PrioritySelectorState createState() => _PrioritySelectorState();
 }
 
 class _PrioritySelectorState extends State<PrioritySelector> {
   String? selectedPriority;
-
   List<String> priorityOptions = ['High', 'Medium', 'Low'];
 
   @override
@@ -54,7 +53,6 @@ class _PrioritySelectorState extends State<PrioritySelector> {
                           ? Colors.green
                           : Color.fromARGB(255, 255, 170, 59)),
             ),
-            
           ),
         );
       }).toList(),

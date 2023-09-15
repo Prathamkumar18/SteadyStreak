@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 class YesNoSelector extends StatefulWidget {
   final ValueChanged<String?> onYesNoSelected;
 
-  YesNoSelector({required this.onYesNoSelected});
+  const YesNoSelector({super.key, required this.onYesNoSelected});
 
   @override
+  // ignore: library_private_types_in_public_api
   _YesNoSelectorState createState() => _YesNoSelectorState();
 }
 
 class _YesNoSelectorState extends State<YesNoSelector> {
   String? selectedOption;
-
   List<String> options = ['Yes', 'No'];
 
   @override
@@ -20,7 +20,6 @@ class _YesNoSelectorState extends State<YesNoSelector> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: options.map((option) {
         bool isSelected = option == selectedOption;
-
         return GestureDetector(
           onTap: () {
             setState(() {

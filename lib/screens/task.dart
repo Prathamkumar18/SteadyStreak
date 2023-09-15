@@ -1,10 +1,7 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
-
 import 'package:steady_streak/screens/home_screen.dart';
 import 'package:steady_streak/utils/colors.dart';
 import 'package:steady_streak/utils/config.dart';
@@ -14,6 +11,7 @@ import 'package:steady_streak/widgets/icon_selector.dart';
 import 'package:steady_streak/widgets/priority_selector.dart';
 import 'package:steady_streak/widgets/yes_no_selector.dart';
 
+// ignore: must_be_immutable
 class AddTaskScreen extends StatefulWidget {
   String email;
   final Function onTaskAdded;
@@ -60,6 +58,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   if (response.statusCode == 200) {
     widget.onTaskAdded();
+    // ignore: use_build_context_synchronously
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => HomeScreen(email: email)),
@@ -73,9 +72,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: bg,
+        backgroundColor: background,
         appBar: AppBar(
-          backgroundColor: bg,
+          backgroundColor: background,
           elevation: 0,
           leading: InkWell(
             onTap: () {
@@ -83,7 +82,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             },
             child: Icon(
               Icons.arrow_back_ios_new,
-              color: Colors.black,
+              color: black,
             ),
           ),
         ),
@@ -196,7 +195,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   height: 10,
                 ),
                 IconSelector(
-                  icons: [
+                  icons: const [
                     Icons.wb_sunny,
                     Icons.book,
                     Icons.fitness_center,
@@ -224,7 +223,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   style: GoogleFonts.nobile(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
-                      color: Colors.black),
+                      color: black),
                 ),
                 SizedBox(
                   height: 5,
@@ -244,7 +243,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   style: GoogleFonts.nobile(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
-                      color: Colors.black),
+                      color: black),
                 ),
                 SizedBox(
                   height: 5,
@@ -264,7 +263,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   style: GoogleFonts.nobile(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
-                      color: Colors.black),
+                      color: black),
                 ),
                 SizedBox(
                   height: 5,
@@ -282,8 +281,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 Center(
                   child: CustomButton(
                       text: "Add Task",
-                      color: (check()) ? Colors.black : Colors.grey,
-                      textColor: Colors.white,
+                      color: (check()) ? black : Colors.grey,
+                      textColor: white,
                       onPressed: () {
                         if (check()) {
                           final userEmail = widget.email;

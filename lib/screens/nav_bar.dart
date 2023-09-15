@@ -1,17 +1,16 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
-
 import 'package:steady_streak/screens/home_screen.dart';
 import 'package:steady_streak/screens/profile_screen.dart';
-
+import 'package:steady_streak/utils/colors.dart';
 import 'analytics_screen.dart';
 
 class BottomNav extends StatefulWidget {
+  // ignore: prefer_typing_uninitialized_variables
   final token;
-  BottomNav({
+  const BottomNav({
     Key? key,
     required this.token,
   }) : super(key: key);
@@ -22,7 +21,7 @@ class BottomNav extends StatefulWidget {
 
 class _BottomNavState extends State<BottomNav> {
   late String email;
-  PersistentTabController _controller =
+  final PersistentTabController _controller =
       PersistentTabController(initialIndex: 1);
 
   List<Widget> _buildScreens() {
@@ -51,7 +50,7 @@ class _BottomNavState extends State<BottomNav> {
         screens: _buildScreens(),
         items: _navBarsItems(),
         confineInSafeArea: true,
-        backgroundColor: Colors.black,
+        backgroundColor: black,
         handleAndroidBackButtonPress: true,
         resizeToAvoidBottomInset: true,
         hideNavigationBarWhenKeyboardShows: true,

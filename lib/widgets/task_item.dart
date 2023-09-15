@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import 'package:steady_streak/activity.dart';
+import '../models/activity.dart';
 
 class TaskItem extends StatefulWidget {
   final Activity activity;
   final VoidCallback onDelete;
   final ValueChanged<bool> onUpdateStatus;
 
-  TaskItem({
+  const TaskItem({
     Key? key,
     required this.activity,
     required this.onDelete,

@@ -4,9 +4,10 @@ class IconSelector extends StatefulWidget {
   final List<IconData> icons;
   final Function(IconData?) onIconSelected;
 
-  IconSelector({required this.icons, required this.onIconSelected});
+  const IconSelector({super.key, required this.icons, required this.onIconSelected});
 
   @override
+  // ignore: library_private_types_in_public_api
   _IconSelectorState createState() => _IconSelectorState();
 }
 
@@ -38,7 +39,7 @@ class _IconSelectorState extends State<IconSelector> {
                         : Color.fromARGB(255, 203, 209, 254),
                   ),
                   Text(
-                    '${taskNames.elementAt(widget.icons.indexOf(icon))}',
+                    taskNames.elementAt(widget.icons.indexOf(icon)),
                     style: TextStyle(
                       color: selectedIcon == icon ? Colors.black : Colors.grey,
                     ),
@@ -68,7 +69,7 @@ class _IconSelectorState extends State<IconSelector> {
                         : Color.fromARGB(255, 203, 209, 254),
                   ),
                   Text(
-                    '${taskNames.elementAt(widget.icons.indexOf(icon))}',
+                    taskNames.elementAt(widget.icons.indexOf(icon)),
                     style: TextStyle(
                       color: selectedIcon == icon ? Colors.black : Colors.grey,
                     ),

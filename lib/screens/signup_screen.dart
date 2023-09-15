@@ -32,6 +32,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           body: jsonEncode(regBody),
           headers: {"content-Type": "application/json"});
       if (res.statusCode == 200) {
+        // ignore: use_build_context_synchronously
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => LoginScreen()),
@@ -39,8 +40,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
       } else {
         var jsonResponse = jsonDecode(res.body);
         if (jsonResponse["message"].toString().contains("duplicate")) {
+          // ignore: use_build_context_synchronously
           showSnackBar(context, "Email already exist");
         } else {
+          // ignore: use_build_context_synchronously
           showSnackBar(context, "Enter valid Credentials");
         }
       }
@@ -52,7 +55,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     const SystemUiOverlayStyle(
-        statusBarColor: tintWhite, systemNavigationBarColor: Colors.white);
+        statusBarColor: tintWhite, systemNavigationBarColor: white);
     return Scaffold(
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -171,7 +174,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               child: CustomButton(
                 text: "Sign up",
                 image: false,
-                textColor: Colors.white,
+                textColor: white,
                 color: Colors.blue,
                 onPressed: () {
                   registerUser();

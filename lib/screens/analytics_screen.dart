@@ -1,8 +1,9 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:steady_streak/utils/colors.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import '../models/point_data.dart';
 
 class AnalyticsScreen extends StatefulWidget {
   final String email;
@@ -18,7 +19,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   List<PointData> _dateWiseData = [];
   bool line = true;
   bool bar = true;
-  bool activity_vs_points = false;
+  bool activityVsPoints = false;
 
   @override
   void initState() {
@@ -30,7 +31,6 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     try {
       final response = await http.get(Uri.parse(
           'http://10.0.2.2:8082/user/${widget.email}/last-7-date-wise-data'));
-      print(response.body);
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
         if (jsonResponse['last7DateWiseData'] is List) {
@@ -48,8 +48,6 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   percent: item['percent'] as int);
             }).toList();
           });
-        } else {
-          print('Invalid data format');
         }
       } else {
         print('Failed to load data');
@@ -62,11 +60,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: black,
       appBar: AppBar(
         centerTitle: true,
         elevation: 0,
-        backgroundColor: Colors.black,
+        backgroundColor: black,
         title: InkWell(
           onTap: () {
             setState(() {
@@ -75,7 +73,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           },
           child: Text(
             'Analytics',
-            style: TextStyle(color: Colors.white, fontSize: 30),
+            style: TextStyle(color: white, fontSize: 30),
           ),
         ),
       ),
@@ -90,18 +88,18 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     line = !line;
                   });
                 },
-                child: (line == true)
-                    ? Text(
-                        "Curve graph",
-                        style: TextStyle(color: Colors.black),
-                      )
-                    : Text(
-                        "Line graph",
-                        style: TextStyle(color: Colors.black),
-                      ),
                 style: ButtonStyle(
                     backgroundColor: MaterialStateColor.resolveWith(
                         (states) => Color.fromARGB(255, 233, 246, 247))),
+                child: (line == true)
+                    ? Text(
+                        "Curve graph",
+                        style: TextStyle(color: black),
+                      )
+                    : Text(
+                        "Line graph",
+                        style: TextStyle(color: black),
+                      ),
               ),
               ElevatedButton(
                   onPressed: () {
@@ -109,36 +107,36 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       bar = !bar;
                     });
                   },
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateColor.resolveWith(
+                          (states) => Color.fromARGB(255, 233, 246, 247))),
                   child: (bar)
                       ? Text(
                           "Bar graph",
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(color: black),
                         )
                       : Text(
                           "Row graph",
-                          style: TextStyle(color: Colors.black),
-                        ),
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStateColor.resolveWith(
-                          (states) => Color.fromARGB(255, 233, 246, 247)))),
+                          style: TextStyle(color: black),
+                        )),
               ElevatedButton(
                   onPressed: () {
                     setState(() {
-                      activity_vs_points = !activity_vs_points;
+                      activityVsPoints = !activityVsPoints;
                     });
                   },
-                  child: (activity_vs_points)
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateColor.resolveWith(
+                          (states) => Color.fromARGB(255, 233, 246, 247))),
+                  child: (activityVsPoints)
                       ? Text(
                           "activity_vs_points bar",
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(color: black),
                         )
                       : Text(
                           "activity_vs_points range",
-                          style: TextStyle(color: Colors.black),
-                        ),
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStateColor.resolveWith(
-                          (states) => Color.fromARGB(255, 233, 246, 247)))),
+                          style: TextStyle(color: black),
+                        )),
             ],
           ),
           Expanded(
@@ -181,14 +179,14 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                 name: 'percent',
                                 dataLabelSettings: DataLabelSettings(
                                   isVisible: true,
-                                  textStyle: TextStyle(
-                                      color: Colors.white, fontSize: 12),
+                                  textStyle:
+                                      TextStyle(color: white, fontSize: 12),
                                 ),
                               ),
                             ],
                           ),
                         )
-                      : Container(
+                      : SizedBox(
                           height: 300,
                           child: SfCartesianChart(
                             primaryXAxis: DateTimeAxis(
@@ -217,8 +215,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                     DateTime.parse(point.date),
                                 dataLabelSettings: DataLabelSettings(
                                   isVisible: true,
-                                  textStyle: TextStyle(
-                                      color: Colors.white, fontSize: 12),
+                                  textStyle:
+                                      TextStyle(color: white, fontSize: 12),
                                 ),
                                 yValueMapper: (PointData point, _) =>
                                     point.percent,
@@ -227,7 +225,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                           ),
                         ),
                   (bar)
-                      ? Container(
+                      ? SizedBox(
                           height: 300,
                           child: SfCartesianChart(
                             primaryXAxis: DateTimeAxis(
@@ -251,15 +249,15 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                             series: <BarSeries<PointData, DateTime>>[
                               BarSeries<PointData, DateTime>(
                                 dataSource: _dateWiseData,
-                                gradient: LinearGradient(colors: [
+                                gradient: LinearGradient(colors: const [
                                   Color.fromARGB(255, 1, 56, 101),
                                   Color.fromARGB(255, 16, 91, 152),
                                   Color.fromARGB(255, 110, 169, 251)
                                 ]),
                                 dataLabelSettings: DataLabelSettings(
                                   isVisible: true,
-                                  textStyle: TextStyle(
-                                      color: Colors.white, fontSize: 12),
+                                  textStyle:
+                                      TextStyle(color: white, fontSize: 12),
                                 ),
                                 xValueMapper: (PointData point, _) =>
                                     DateTime.parse(point.date),
@@ -269,7 +267,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                             ],
                           ),
                         )
-                      : Container(
+                      : SizedBox(
                           height: 300,
                           child: SfCartesianChart(
                             primaryXAxis: DateTimeAxis(
@@ -297,10 +295,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                     DateTime.parse(point.date),
                                 dataLabelSettings: DataLabelSettings(
                                   isVisible: true,
-                                  textStyle: TextStyle(
-                                      color: Colors.white, fontSize: 12),
+                                  textStyle:
+                                      TextStyle(color: white, fontSize: 12),
                                 ),
-                                gradient: LinearGradient(colors: [
+                                gradient: LinearGradient(colors: const [
                                   Color.fromARGB(255, 1, 56, 101),
                                   Color.fromARGB(255, 16, 91, 152),
                                   Color.fromARGB(255, 110, 169, 251)
@@ -311,8 +309,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                             ],
                           ),
                         ),
-                  (activity_vs_points)
-                      ? Container(
+                  (activityVsPoints)
+                      ? SizedBox(
                           height: 300,
                           child: SfCartesianChart(
                             primaryXAxis: DateTimeAxis(
@@ -341,10 +339,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                 color: Colors.blue,
                                 dataLabelSettings: DataLabelSettings(
                                   isVisible: true,
-                                  textStyle: TextStyle(
-                                      color: Colors.white, fontSize: 12),
+                                  textStyle:
+                                      TextStyle(color: white, fontSize: 12),
                                 ),
-                                gradient: LinearGradient(colors: [
+                                gradient: LinearGradient(colors: const [
                                   Color.fromARGB(255, 0, 12, 21),
                                   Color.fromARGB(255, 18, 96, 159),
                                   Color.fromARGB(255, 158, 198, 254)
@@ -356,13 +354,13 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                 dataSource: _dateWiseData,
                                 xValueMapper: (PointData point, _) =>
                                     DateTime.parse(point.date),
-                                color: Colors.white,
+                                color: white,
                                 dataLabelSettings: DataLabelSettings(
                                   isVisible: true,
-                                  textStyle: TextStyle(
-                                      color: Colors.white, fontSize: 12),
+                                  textStyle:
+                                      TextStyle(color: white, fontSize: 12),
                                 ),
-                                gradient: LinearGradient(colors: [
+                                gradient: LinearGradient(colors: const [
                                   Color.fromARGB(255, 0, 34, 9),
                                   Color.fromARGB(255, 0, 255, 47),
                                   Color.fromARGB(255, 110, 251, 115)
@@ -373,7 +371,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                             ],
                           ),
                         )
-                      : Container(
+                      : SizedBox(
                           height: 300,
                           child: SfCartesianChart(
                             primaryXAxis: DateTimeAxis(
@@ -399,14 +397,14 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                 dataSource: _dateWiseData,
                                 dataLabelSettings: DataLabelSettings(
                                   isVisible: true,
-                                  textStyle: TextStyle(
-                                      color: Colors.white, fontSize: 12),
+                                  textStyle:
+                                      TextStyle(color: white, fontSize: 12),
                                 ),
                                 xValueMapper: (PointData point, _) =>
                                     DateTime.parse(point.date),
                                 highValueMapper: (PointData point, _) =>
                                     point.activitiesCount,
-                                gradient: LinearGradient(colors: [
+                                gradient: LinearGradient(colors: const [
                                   Color.fromARGB(255, 20, 20, 20),
                                   Color.fromARGB(255, 6, 83, 145),
                                   Color.fromARGB(255, 107, 161, 236)
@@ -420,10 +418,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                     DateTime.parse(point.date),
                                 dataLabelSettings: DataLabelSettings(
                                   isVisible: true,
-                                  textStyle: TextStyle(
-                                      color: Colors.white, fontSize: 12),
+                                  textStyle:
+                                      TextStyle(color: white, fontSize: 12),
                                 ),
-                                gradient: LinearGradient(colors: [
+                                gradient: LinearGradient(colors: const [
                                   Color.fromARGB(255, 29, 29, 29),
                                   Color.fromARGB(255, 7, 96, 24),
                                   Color.fromARGB(255, 50, 212, 56)
@@ -444,18 +442,4 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       ),
     );
   }
-}
-
-class PointData {
-  final String date;
-  final int points;
-  final int activitiesCount;
-  final int percent;
-
-  PointData({
-    required this.date,
-    required this.points,
-    required this.percent,
-    required this.activitiesCount,
-  });
 }

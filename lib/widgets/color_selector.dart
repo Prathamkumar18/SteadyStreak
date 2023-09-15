@@ -3,15 +3,17 @@ import 'package:flutter/cupertino.dart';
 class ColorSelector extends StatefulWidget {
   final ValueChanged<Color?> onColorSelected;
 
-  ColorSelector({required this.onColorSelected});
+  const ColorSelector({super.key, required this.onColorSelected});
 
   @override
+  // ignore: library_private_types_in_public_api
   _ColorSelectorState createState() => _ColorSelectorState();
 }
 
 class _ColorSelectorState extends State<ColorSelector> {
   Color? selectedColor;
-
+  double selectedSize = 50.0;
+  double unselectedSize = 40.0;
   List<Color> colorOptions = [
     Color.fromARGB(255, 244, 190, 186),
     Color.fromARGB(255, 126, 173, 202),
@@ -20,10 +22,7 @@ class _ColorSelectorState extends State<ColorSelector> {
     Color.fromARGB(255, 195, 150, 205),
     Color.fromRGBO(225, 189, 135, 1),
   ];
-
-  double selectedSize = 50.0;
-  double unselectedSize = 40.0;
-
+  
   @override
   Widget build(BuildContext context) {
     return Row(

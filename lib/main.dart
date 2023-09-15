@@ -13,6 +13,7 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  // ignore: prefer_typing_uninitialized_variables
   final token;
   const MyApp({
     Key? key,

@@ -40,7 +40,9 @@ class _LoginScreenState extends State<LoginScreen> {
       if (res.statusCode == 200) {
         var myToken = jsonResponse['token'];
         prefs.setString('token', myToken);
+        // ignore: use_build_context_synchronously
         showSnackBar(context, "Logged in successfully.");
+        // ignore: use_build_context_synchronously
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -51,6 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       } else {
         String resMessage = jsonResponse["message"].toString();
+        // ignore: use_build_context_synchronously
         showSnackBar(context, resMessage);
       }
     } else {
@@ -71,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     const SystemUiOverlayStyle(
-        statusBarColor: tintWhite, systemNavigationBarColor: Colors.white);
+        statusBarColor: tintWhite, systemNavigationBarColor: white);
     return Scaffold(
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -185,7 +188,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: CustomButton(
                 text: "Login",
                 image: false,
-                textColor: Colors.white,
+                textColor: white,
                 color: Colors.blue,
                 onPressed: () {
                   loginUser();

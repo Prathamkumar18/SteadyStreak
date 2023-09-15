@@ -6,10 +6,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:steady_streak/screens/login_screen.dart';
 import 'package:steady_streak/utils/colors.dart';
 import 'package:steady_streak/utils/config.dart';
-
 import '../utils/utils.dart';
 
 class ProfileScreen extends StatefulWidget {
+  // ignore: prefer_typing_uninitialized_variables
   final email;
   const ProfileScreen({
     Key? key,
@@ -37,6 +37,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
 
     if (response.statusCode == 200) {
+      // ignore: use_build_context_synchronously
       showSnackBar(context, 'Username updated successfully');
       setState(() {
         uname = newUsername;
@@ -88,6 +89,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final response = await http.delete(Uri.parse(apiUrl));
     if (response.statusCode == 200) {
       deleteSharedPreferences(widget.email);
+      // ignore: use_build_context_synchronously
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => LoginScreen()),
@@ -124,6 +126,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 SizedBox(height: 10),
                 TextIcon(
+                  (uname.isEmpty)?"":
                     uname.substring(0, 1).toUpperCase() + uname.substring(1),
                     Icon(Icons.edit),
                     28),
@@ -145,7 +148,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 SizedBox(height: 10),
                 Text("Deactivate Account:",
                     style: TextStyle(
-                        color: Colors.black,
+                        color: black,
                         fontSize: 30,
                         fontWeight: FontWeight.bold)),
                 Text(
@@ -163,9 +166,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           minimumSize:
                               MaterialStateProperty.all(Size.fromHeight(40)),
                           overlayColor:
-                              MaterialStateColor.resolveWith((states) => bg),
+                              MaterialStateColor.resolveWith((states) => background),
                           backgroundColor: MaterialStateColor.resolveWith(
-                              (states) => Colors.black)),
+                              (states) => black)),
                       onPressed: () {
                         deleteAccount();
                       },
@@ -184,25 +187,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ));
   }
 
+  // ignore: non_constant_identifier_names
   Widget TextIcon(String text, Icon icon, double fontS) {
     var w = MediaQuery.of(context).size.width;
     return Row(
       children: [
         Text(text,
             style: TextStyle(
-                color: Colors.black,
+                color: black,
                 fontSize: fontS,
                 fontWeight: FontWeight.bold)),
-        SizedBox(
-          width: w * 0.02,
-        ),
+        SizedBox(width: w * 0.02),
         InkWell(
             onTap: () {
               setState(() {
                 if (text == "Change Password ?") {
                   onTapPasswordEdit = !onTapPasswordEdit;
-                } else
+                } else {
                   onTapNameEdit = !onTapNameEdit;
+                }
               });
             },
             child: icon)
@@ -210,6 +213,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  // ignore: non_constant_identifier_names
   Widget EditBox(String text, Icon icon, TextEditingController controller) {
     return Column(
       children: [
@@ -233,18 +237,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               prefixIcon: icon),
         ),
-        SizedBox(
-          height: 10,
-        ),
+        SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Container(
+            SizedBox(
               height: 40,
               width: 150,
               child: TextButton(
                   style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.black)),
+                      backgroundColor: MaterialStateProperty.all(black)),
                   onPressed: () {
                     if (text == "Password") {
                       final newPassword = password.text;
@@ -255,30 +257,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     }
                   },
                   child: Text((text == "Email") ? "reset" : "save",
-                      style: TextStyle(fontSize: 20, color: Colors.white))),
+                      style: TextStyle(fontSize: 20, color: white))),
             ),
-            Container(
+            SizedBox(
               height: 40,
               width: 150,
               child: TextButton(
                   style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.black)),
+                      backgroundColor: MaterialStateProperty.all(black)),
                   onPressed: () {
                     setState(() {
                       if (text == "Username") {
                         onTapNameEdit = false;
-                      } else
+                      } else {
                         onTapPasswordEdit = false;
+                      }
                     });
                   },
                   child: Text("cancel",
-                      style: TextStyle(fontSize: 20, color: Colors.white))),
+                      style: TextStyle(fontSize: 20, color: white))),
             ),
           ],
         ),
-        SizedBox(
-          height: 10,
-        ),
+        SizedBox(height: 10),
       ],
     );
   }
