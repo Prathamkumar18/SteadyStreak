@@ -123,7 +123,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       color: Colors.grey),
                 ),
                 SizedBox(height: 10),
-                TextIcon(uname, Icon(Icons.edit), 28),
+                TextIcon(
+                    uname.substring(0, 1).toUpperCase() + uname.substring(1),
+                    Icon(Icons.edit),
+                    28),
                 SizedBox(height: 10),
                 if (onTapNameEdit)
                   EditBox("Username", Icon(Icons.person), username),

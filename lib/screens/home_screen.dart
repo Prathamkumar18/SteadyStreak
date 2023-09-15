@@ -81,13 +81,11 @@ class _HomeScreenState extends State<HomeScreen> {
     );
 
     if (response.statusCode == 200) {
-      // Update the task status in the local list
       setState(() {
         final updatedActivity = activities.firstWhere(
           (activity) => activity.title == title,
         );
         updatedActivity.isChecked = isChecked;
-        // Update completed task count
         c = countCompletedTasks(activities);
       });
     } else {
@@ -265,7 +263,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 Padding(
                   padding: const EdgeInsets.only(left: 5.0),
                   child: Text(
-                    userName,
+                    userName.substring(0, 1).toUpperCase() +
+                        userName.substring(1),
                     style: GoogleFonts.raleway(
                       fontWeight: FontWeight.bold,
                       fontSize: 30,
