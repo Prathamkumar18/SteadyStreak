@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:steady_streak/screens/login_screen.dart';
 import 'package:steady_streak/utils/colors.dart';
 import 'package:steady_streak/utils/utils.dart';
 import 'package:steady_streak/widgets/custom_button.dart';
+import 'package:http/http.dart' as http;
+import '../utils/config.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -14,6 +19,26 @@ class ForgotPasswordScreen extends StatefulWidget {
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  bool passwordVisible = false;
+
+  Future<void> updateUserPassword() async {
+    final apiUrl = '$updatePassword/${emailController.text}';
+    final response = await http.put(
+      Uri.parse(apiUrl),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({"newPassword": passwordController.text}),
+    );
+    if (response.statusCode == 200) {
+      showSnackBar(context, 'Password updated successfully');
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => LoginScreen()));
+    } else {
+      showSnackBar(context, 'Failed to update password');
+    }
+  }
 
   @override
   void dispose() {
@@ -36,7 +61,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 height: h * 0.08,
               ),
               Container(
-                  height: h * 0.40,
+                  height: h * 0.30,
                   width: w,
                   decoration: BoxDecoration(
                       image: DecorationImage(
@@ -101,6 +126,39 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             ),
                             prefixIcon: Icon(Icons.alternate_email_outlined)),
                       ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      TextFormField(
+                        keyboardType: TextInputType.text,
+                        controller: passwordController,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Enter Password";
+                          } else if (value.length < 6) {
+                            return "Password should be >=6";
+                          } else {
+                            return null;
+                          }
+                        },
+                        obscureText: passwordVisible == true ? false : true,
+                        decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20)),
+                            hintText: "length should be >=6",
+                            label: Text("Password",
+                                style: TextStyle(fontWeight: FontWeight.w400)),
+                            prefixIcon: Icon(Icons.lock_open),
+                            suffixIcon: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    passwordVisible = !passwordVisible;
+                                  });
+                                },
+                                child: Icon(passwordVisible == true
+                                    ? Icons.visibility_outlined
+                                    : Icons.visibility_off_outlined))),
+                      ),
                     ],
                   ),
                 ),
@@ -115,11 +173,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   textColor: white,
                   color: Colors.blue,
                   onPressed: () {
-                    if (emailController.text.isNotEmpty) {
-                      showSnackBar(context,
-                          "You will recieve a mail to reset your password.");
+                    if (emailController.text.isEmpty ||
+                        passwordController.text.isEmpty) {
+                      showSnackBar(context, "Enter complete details");
                     } else {
-                      showSnackBar(context, "Please enter correct Email ID");
+                      updateUserPassword();
                     }
                   },
                 ),

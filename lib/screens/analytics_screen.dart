@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:steady_streak/utils/colors.dart';
+import 'package:steady_streak/utils/config.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import '../models/point_data.dart';
 
@@ -30,7 +31,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   Future<void> _fetchDateWiseData() async {
     try {
       final response = await http.get(Uri.parse(
-          'http://10.0.2.2:8082/user/${widget.email}/last-7-date-wise-data'));
+          '$url/user/${widget.email}/last-7-date-wise-data'));
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
         if (jsonResponse['last7DateWiseData'] is List) {

@@ -32,8 +32,8 @@ class _HomeScreenState extends State<HomeScreen> {
   int total = 0;
 
   Future<void> fetchActivities() async {
-    final response = await http.get(
-        Uri.parse('http://10.0.2.2:8082/user/${widget.email}/all-activities'));
+    final response =
+        await http.get(Uri.parse('$url/user/${widget.email}/all-activities'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body)['activities'];
@@ -51,8 +51,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> updateTaskStatus(String title, bool isChecked) async {
-    const String updateActivityStatus =
-        'http://10.0.2.2:8082/user/update-activity-status';
     final url = Uri.parse(updateActivityStatus);
     final response = await http.put(
       url,
@@ -134,14 +132,14 @@ class _HomeScreenState extends State<HomeScreen> {
     final lastScheduledDate = await getLastScheduledDate();
 
     if (lastScheduledDate == null || isNewDay(lastScheduledDate)) {
-      await scheduleDailyUpdate();
+      await scheduleUserDailyUpdate();
 
       await saveLastScheduledDate();
     }
   }
 
-  Future<void> scheduleDailyUpdate() async {
-    final url = Uri.parse('http://10.0.2.2:8082/user/schedule-daily-update');
+  Future<void> scheduleUserDailyUpdate() async {
+    final url = Uri.parse(updateDaily);
     try {
       final response = await http.post(
         url,

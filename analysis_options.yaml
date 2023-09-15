@@ -23,6 +23,7 @@ linter:
   # producing the lint.
   rules:
     prefer_const_constructors: false
+    use_build_context_synchronously: false
     # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
 
 # Additional information about this file can be found at

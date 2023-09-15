@@ -40,9 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (res.statusCode == 200) {
         var myToken = jsonResponse['token'];
         prefs.setString('token', myToken);
-        // ignore: use_build_context_synchronously
         showSnackBar(context, "Logged in successfully.");
-        // ignore: use_build_context_synchronously
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -53,7 +51,6 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       } else {
         String resMessage = jsonResponse["message"].toString();
-        // ignore: use_build_context_synchronously
         showSnackBar(context, resMessage);
       }
     } else {

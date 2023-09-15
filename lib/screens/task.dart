@@ -27,7 +27,6 @@ class AddTaskScreen extends StatefulWidget {
 
 class _AddTaskScreenState extends State<AddTaskScreen> {
   final _formKey = GlobalKey<FormState>();
-
   TextEditingController taskController = TextEditingController();
   TextEditingController descController = TextEditingController();
   String priority = "";
@@ -47,27 +46,24 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     }
   }
 
-  Future<void> addActivity(
-  String email, Map<String, dynamic> activityData) async {
-  final url = Uri.parse('$addTask/$email');
-  final response = await http.post(
-    url,
-    headers: {'Content-Type': 'application/json'},
-    body: json.encode(activityData),
-  );
-
-  if (response.statusCode == 200) {
-    widget.onTaskAdded();
-    // ignore: use_build_context_synchronously
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => HomeScreen(email: email)),
+  Future<void> addActivity(Map<String, dynamic> activityData) async {
+    final url = Uri.parse('$addTask/${widget.email}');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(activityData),
     );
-  } else {
-    print('Failed to add activity: ${response.body}');
-  }
-}
 
+    if (response.statusCode == 200) {
+      widget.onTaskAdded();
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen(email: widget.email)),
+      );
+    } else {
+      print('Failed to add activity: ${response.body}');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -221,9 +217,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 Text(
                   "Tile Color",
                   style: GoogleFonts.nobile(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      color: black),
+                      fontWeight: FontWeight.bold, fontSize: 20, color: black),
                 ),
                 SizedBox(
                   height: 5,
@@ -241,9 +235,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 Text(
                   "Priority",
                   style: GoogleFonts.nobile(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      color: black),
+                      fontWeight: FontWeight.bold, fontSize: 20, color: black),
                 ),
                 SizedBox(
                   height: 5,
@@ -261,9 +253,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 Text(
                   "Daily ?",
                   style: GoogleFonts.nobile(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      color: black),
+                      fontWeight: FontWeight.bold, fontSize: 20, color: black),
                 ),
                 SizedBox(
                   height: 5,
@@ -285,7 +275,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       textColor: white,
                       onPressed: () {
                         if (check()) {
-                          final userEmail = widget.email;
                           final activityDetails = {
                             'color': color,
                             'icon': icon,
@@ -294,7 +283,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             'priority': priority,
                             'daily': daily,
                           };
-                          addActivity(userEmail, activityDetails);
+                          addActivity(activityDetails);
                         }
                       },
                       image: false),

@@ -29,7 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Future<void> updateUsername(String newUsername) async {
     final response = await http.put(
-      Uri.parse('http://10.0.2.2:8082/user/update-username/${widget.email}'),
+      Uri.parse('$updateName/${widget.email}'),
       body: jsonEncode({"newUsername": newUsername}),
       headers: {
         'Content-Type': 'application/json',
@@ -37,7 +37,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
 
     if (response.statusCode == 200) {
-      // ignore: use_build_context_synchronously
       showSnackBar(context, 'Username updated successfully');
       setState(() {
         uname = newUsername;
@@ -59,9 +58,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
-  Future<void> updatePassword(String newPassword) async {
-    final apiUrl = 'http://10.0.2.2:8082/user/update-password/${widget.email}';
-
+  Future<void> updateUserPassword(String newPassword) async {
+    final apiUrl = '$updatePassword/${widget.email}';
     final response = await http.put(
       Uri.parse(apiUrl),
       headers: {
@@ -84,12 +82,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     await preferences.remove(email);
   }
 
-  Future<void> deleteAccount() async {
-    final apiUrl = 'http://10.0.2.2:8082/user/delete-account/${widget.email}';
+  Future<void> deleteUserAccount() async {
+    final apiUrl = '$deleteAccount/${widget.email}';
     final response = await http.delete(Uri.parse(apiUrl));
     if (response.statusCode == 200) {
       deleteSharedPreferences(widget.email);
-      // ignore: use_build_context_synchronously
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => LoginScreen()),
@@ -126,8 +123,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 SizedBox(height: 10),
                 TextIcon(
-                  (uname.isEmpty)?"":
-                    uname.substring(0, 1).toUpperCase() + uname.substring(1),
+                    (uname.isEmpty)
+                        ? ""
+                        : uname.substring(0, 1).toUpperCase() +
+                            uname.substring(1),
                     Icon(Icons.edit),
                     28),
                 SizedBox(height: 10),
@@ -165,12 +164,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               BorderSide(color: Colors.red)),
                           minimumSize:
                               MaterialStateProperty.all(Size.fromHeight(40)),
-                          overlayColor:
-                              MaterialStateColor.resolveWith((states) => background),
+                          overlayColor: MaterialStateColor.resolveWith(
+                              (states) => background),
                           backgroundColor: MaterialStateColor.resolveWith(
                               (states) => black)),
                       onPressed: () {
-                        deleteAccount();
+                        deleteUserAccount();
                       },
                       icon: Icon(
                         Icons.delete_outline,
@@ -194,9 +193,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       children: [
         Text(text,
             style: TextStyle(
-                color: black,
-                fontSize: fontS,
-                fontWeight: FontWeight.bold)),
+                color: black, fontSize: fontS, fontWeight: FontWeight.bold)),
         SizedBox(width: w * 0.02),
         InkWell(
             onTap: () {
@@ -250,7 +247,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   onPressed: () {
                     if (text == "Password") {
                       final newPassword = password.text;
-                      updatePassword(newPassword);
+                      updateUserPassword(newPassword);
                     } else {
                       final newUsername = username.text;
                       updateUsername(newUsername);

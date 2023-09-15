@@ -32,7 +32,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
           body: jsonEncode(regBody),
           headers: {"content-Type": "application/json"});
       if (res.statusCode == 200) {
-        // ignore: use_build_context_synchronously
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => LoginScreen()),
@@ -40,10 +39,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       } else {
         var jsonResponse = jsonDecode(res.body);
         if (jsonResponse["message"].toString().contains("duplicate")) {
-          // ignore: use_build_context_synchronously
           showSnackBar(context, "Email already exist");
         } else {
-          // ignore: use_build_context_synchronously
           showSnackBar(context, "Enter valid Credentials");
         }
       }
