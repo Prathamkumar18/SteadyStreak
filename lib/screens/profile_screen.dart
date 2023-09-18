@@ -145,6 +145,61 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   color: Colors.grey,
                 ),
                 SizedBox(height: 10),
+                Center(
+                  child: ElevatedButton.icon(
+                      style: ButtonStyle(
+                          side: MaterialStateProperty.all(BorderSide(
+                              color: Color.fromARGB(255, 76, 175, 165))),
+                          minimumSize:
+                              MaterialStateProperty.all(Size.fromHeight(40)),
+                          backgroundColor: MaterialStateColor.resolveWith(
+                              (states) => white)),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Logout'),
+                              content: Text('Are you sure you want to logout?'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    final preferences =
+                                        await SharedPreferences.getInstance();
+                                    preferences.remove(widget.email);
+                                    Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                        builder: (context) => LoginScreen(),
+                                      ),
+                                    );
+                                  },
+                                  child: Text('Logout'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      icon: Icon(
+                        Icons.logout,
+                        color: Color.fromARGB(255, 3, 89, 123),
+                      ),
+                      label: Text(
+                        "Log out",
+                        style: TextStyle(
+                          color: Color.fromARGB(255, 3, 89, 123),
+                        ),
+                      )),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
                 Text("Deactivate Account:",
                     style: TextStyle(
                         color: black,

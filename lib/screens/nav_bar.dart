@@ -26,7 +26,9 @@ class _BottomNavState extends State<BottomNav> {
 
   List<Widget> _buildScreens() {
     return [
-      AnalyticsScreen(email: email,),
+      AnalyticsScreen(
+        email: email,
+      ),
       HomeScreen(email: email),
       ProfileScreen(
         email: email,

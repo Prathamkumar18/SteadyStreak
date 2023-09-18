@@ -103,6 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (response.statusCode == 204) {
       setState(() {
         activities.removeWhere((activity) => activity.title == title);
+        fetchActivities();
       });
     } else {
       print('Failed to delete task');
@@ -130,15 +131,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> scheduleDailyUpdateIfNeeded() async {
     final lastScheduledDate = await getLastScheduledDate();
-
     if (lastScheduledDate == null || isNewDay(lastScheduledDate)) {
-      await scheduleUserDailyUpdate();
-
+      final currentDate = DateTime.now();
+      currentDate.subtract(Duration(days: 1));
+      final previousDay = currentDate.toIso8601String();
+      await scheduleUserDailyUpdate(previousDay);
       await saveLastScheduledDate();
     }
   }
 
-  Future<void> scheduleUserDailyUpdate() async {
+  Future<void> scheduleUserDailyUpdate(String date) async {
     final url = Uri.parse(updateDaily);
     try {
       final response = await http.post(
@@ -148,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         body: jsonEncode(<String, dynamic>{
           'email': widget.email,
-          'date': DateTime.now().toIso8601String(),
+          'date': date, // Use the provided date (previous day)
         }),
       );
 

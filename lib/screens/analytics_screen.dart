@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:steady_streak/utils/colors.dart';
 import 'package:steady_streak/utils/config.dart';
+import 'package:steady_streak/widgets/box.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import '../models/point_data.dart';
 
@@ -30,12 +31,12 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
 
   Future<void> _fetchDateWiseData() async {
     try {
-      final response = await http.get(Uri.parse(
-          '$url/user/${widget.email}/last-7-date-wise-data'));
+      final response = await http
+          .get(Uri.parse('$user/${widget.email}/last-7-date-wise-data'));
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
         if (jsonResponse['last7DateWiseData'] is List) {
-          final data = jsonResponse['last7DateWiseData'] as List;
+          final data = jsonResponse['last7DateWiseData']! as List;
           setState(() {
             _dateWiseData = data.map((item) {
               final dateStr = item['date'] as String;
@@ -43,10 +44,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               final formattedDate =
                   '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
               return PointData(
-                  date: formattedDate,
-                  points: item['points'] as int,
-                  activitiesCount: item['activitiesCount'] as int,
-                  percent: item['percent'] as int);
+                date: formattedDate,
+                points: item['points'] as int? ?? 0,
+                activitiesCount: item['activitiesCount'] as int? ?? 0,
+                percent: item['percent'] as int? ?? 0,
+              );
             }).toList();
           });
         }
@@ -54,7 +56,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
         print('Failed to load data');
       }
     } catch (error) {
-      print('Error: $error');
+      print('fdsjflksdjfError: $error');
     }
   }
 
@@ -62,24 +64,34 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: black,
-      appBar: AppBar(
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: black,
-        title: InkWell(
-          onTap: () {
-            setState(() {
-              _fetchDateWiseData();
-            });
-          },
-          child: Text(
-            'Analytics',
-            style: TextStyle(color: white, fontSize: 30),
-          ),
-        ),
-      ),
       body: Column(
         children: [
+          SizedBox(
+            height: 30,
+          ),
+          InkWell(
+            onTap: () {
+              setState(() {
+                _fetchDateWiseData();
+              });
+            },
+            child: Text(
+              'Analytics',
+              style: TextStyle(color: white, fontSize: 30),
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Row(
+            children: [
+              for (int i = 0; i < _dateWiseData.length; i++)
+                Box(
+                  date: _dateWiseData.elementAt(i).date.substring(5),
+                  val: _dateWiseData.elementAt(i).percent,
+                ),
+            ],
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -176,7 +188,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                 xValueMapper: (PointData point, _) =>
                                     DateTime.parse(point.date),
                                 yValueMapper: (PointData point, _) =>
-                                    point.percent,
+                                    point.points,
                                 name: 'percent',
                                 dataLabelSettings: DataLabelSettings(
                                   isVisible: true,

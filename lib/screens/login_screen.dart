@@ -36,7 +36,6 @@ class _LoginScreenState extends State<LoginScreen> {
           body: jsonEncode(regBody),
           headers: {"content-Type": "application/json"});
       var jsonResponse = jsonDecode(res.body);
-
       if (res.statusCode == 200) {
         var myToken = jsonResponse['token'];
         prefs.setString('token', myToken);

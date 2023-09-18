@@ -1,4 +1,4 @@
-const url = 'http://10.0.2.2:8082';
+const url = 'https://steadystreakbackend-prathamkumar18.onrender.com';
 
 const auth = "$url/auth";
 const login = "$auth/login";
