@@ -44,7 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         retrieveUserName();
       });
     } else {
-      print('Failed to update username');
+      showSnackBar(context,'Failed to update username');
     }
   }
 
@@ -71,9 +71,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       setState(() {
         onTapPasswordEdit = false;
       });
-      print('Password updated successfully');
+      showSnackBar(context,'Password updated successfully');
     } else {
-      print('Failed to update password');
+      showSnackBar(context,'Failed to update password');
     }
   }
 
@@ -239,9 +239,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           builder: (context) => LoginScreen(),
                                         ),
                                       );
-                                      print('Account deleted successfully');
+                                      showSnackBar(context,'Account deleted successfully');
                                     } else {
-                                      print('Failed to delete account');
+                                      showSnackBar(context,'Failed to delete account');
                                     }
                                   },
                                   child: Text('Delete Account'),

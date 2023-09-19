@@ -11,6 +11,8 @@ import 'package:steady_streak/widgets/icon_selector.dart';
 import 'package:steady_streak/widgets/priority_selector.dart';
 import 'package:steady_streak/widgets/yes_no_selector.dart';
 
+import '../utils/utils.dart';
+
 // ignore: must_be_immutable
 class AddTaskScreen extends StatefulWidget {
   String email;
@@ -61,7 +63,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         MaterialPageRoute(builder: (context) => HomeScreen(email: widget.email)),
       );
     } else {
-      print('Failed to add activity: ${response.body}');
+      showSnackBar(context,'Failed to add activity: ${response.body}');
     }
   }
 

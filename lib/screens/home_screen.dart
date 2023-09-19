@@ -7,6 +7,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:steady_streak/screens/task.dart';
 import 'package:steady_streak/utils/colors.dart';
 import 'package:steady_streak/utils/config.dart';
+import 'package:steady_streak/utils/utils.dart';
 import 'package:steady_streak/widgets/task_item.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/activity.dart';
@@ -73,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
         c = countCompletedTasks(activities);
       });
     } else {
-      print('Failed to update task status');
+      showSnackBar(context,'Failed to update task status');
     }
   }
 
@@ -106,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
         fetchActivities();
       });
     } else {
-      print('Failed to delete task');
+      showSnackBar(context,'Failed to delete task');
     }
   }
 
@@ -157,12 +158,12 @@ class _HomeScreenState extends State<HomeScreen> {
       if (response.statusCode == 200) {
         final responseBody = json.decode(response.body);
         final message = responseBody['message'];
-        print(message);
+        showSnackBar(context,message);
       } else {
-        print('Failed to schedule daily update');
+        showSnackBar(context,'Failed to schedule daily update');
       }
     } catch (error) {
-      print('Error scheduling daily update: $error');
+      showSnackBar(context,'Error scheduling daily update: $error');
     }
   }
 
@@ -498,7 +499,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: SizedBox(
                     height: h - 390,
                     width: w,
-                    child: (activities.length == 0)
+                    child: (activities.isEmpty)
                         ? Container(
                             height: 300,
                             width: 200,

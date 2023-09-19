@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/activity.dart';
+import '../utils/utils.dart';
 
 class TaskItem extends StatefulWidget {
   final Activity activity;
@@ -174,7 +175,7 @@ class _TaskItemState extends State<TaskItem> {
           final intColor = int.parse(hexColor, radix: 16);
           return Color(intColor);
         } catch (e) {
-          print('Error parsing color: $e');
+         showSnackBar(context,'Error parsing color: $e');
         }
       }
     }

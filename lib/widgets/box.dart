@@ -30,17 +30,21 @@ class Box extends StatelessWidget {
   }
 
   Color getColor(int val) {
-    if (val == 0)
+    if (val == 0) {
       return Colors.transparent;
-    else if (val >= 1 && val <= 10)
+    } else {
+      if (val >= 1 && val <= 10) {
       return Color.fromARGB(255, 2, 76, 5);
-    else if (val >= 11 && val <= 30)
+    } else if (val >= 11 && val <= 30) {
       return Color.fromARGB(255, 17, 104, 20);
-    else if (val >= 31 && val <= 50)
+    } else if (val >= 31 && val <= 50) {
       return Color.fromARGB(224, 1, 145, 6);
-    else if (val >= 51 && val <= 70)
+    } else if (val >= 51 && val <= 70) {
       return Color.fromARGB(166, 2, 210, 9);
-    else if (val >= 71 && val <= 90) return Color.fromARGB(209, 1, 221, 8);
+    } else if (val >= 71 && val <= 90) {
+      return Color.fromARGB(209, 1, 221, 8);
+    }
+    }
     return Color.fromARGB(255, 0, 255, 8);
   }
 }

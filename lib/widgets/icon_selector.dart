@@ -25,7 +25,6 @@ class _IconSelectorState extends State<IconSelector> {
               onTap: () {
                 setState(() {
                   selectedIcon = icon;
-                  print(selectedIcon);
                 });
                 widget.onIconSelected(selectedIcon);
               },

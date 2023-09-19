@@ -6,6 +6,7 @@ import 'package:steady_streak/utils/config.dart';
 import 'package:steady_streak/widgets/box.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import '../models/point_data.dart';
+import '../utils/utils.dart';
 
 class AnalyticsScreen extends StatefulWidget {
   final String email;
@@ -53,10 +54,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           });
         }
       } else {
-        print('Failed to load data');
+        showSnackBar(context, 'Failed to load data');
       }
     } catch (error) {
-      print('fdsjflksdjfError: $error');
+      showSnackBar(context, 'fdsjflksdjfError: $error');
     }
   }
 
@@ -85,7 +86,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           ),
           Row(
             children: [
-              for (int i = 0; i < _dateWiseData.length; i++)
+              for (int i = _dateWiseData.length - 1; i >= 0; i--)
                 Box(
                   date: _dateWiseData.elementAt(i).date.substring(5),
                   val: _dateWiseData.elementAt(i).percent,
