@@ -104,7 +104,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 },
                 style: ButtonStyle(
                     backgroundColor: MaterialStateColor.resolveWith(
-                        (states) => Color.fromARGB(255, 233, 246, 247))),
+                        (states) => Color.fromARGB(255, 194, 240, 243))),
                 child: (line == true)
                     ? Text(
                         "Curve graph",
@@ -123,7 +123,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   },
                   style: ButtonStyle(
                       backgroundColor: MaterialStateColor.resolveWith(
-                          (states) => Color.fromARGB(255, 233, 246, 247))),
+                          (states) => Color.fromARGB(255, 194, 240, 243))),
                   child: (bar)
                       ? Text(
                           "Bar graph",
@@ -141,7 +141,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   },
                   style: ButtonStyle(
                       backgroundColor: MaterialStateColor.resolveWith(
-                          (states) => Color.fromARGB(255, 233, 246, 247))),
+                          (states) => Color.fromARGB(255, 194, 240, 243))),
                   child: (activityVsPoints)
                       ? Text(
                           "activity_vs_points bar",
@@ -170,8 +170,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                 textStyle:
                                     TextStyle(fontSize: 16, color: Colors.blue),
                               ),
-                              majorGridLines:
-                                  MajorGridLines(width: 1, color: Colors.red),
+                              majorGridLines: MajorGridLines(
+                                  width: 0.1, color: Colors.grey),
                             ),
                             primaryYAxis: NumericAxis(
                               title: AxisTitle(
@@ -179,23 +179,33 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                 textStyle:
                                     TextStyle(fontSize: 16, color: Colors.blue),
                               ),
-                              majorGridLines:
-                                  MajorGridLines(width: 1, color: Colors.red),
+                              majorGridLines: MajorGridLines(
+                                  width: 0.1, color: Colors.grey),
                             ),
-                            series: <ChartSeries<PointData, DateTime>>[
-                              LineSeries<PointData, DateTime>(
+                            series: <RangeAreaSeries<PointData, DateTime>>[
+                              RangeAreaSeries<PointData, DateTime>(
                                 dataSource: _dateWiseData,
-                                color: Colors.green,
-                                xValueMapper: (PointData point, _) =>
-                                    DateTime.parse(point.date),
-                                yValueMapper: (PointData point, _) =>
-                                    point.percent,
-                                name: 'percent',
                                 dataLabelSettings: DataLabelSettings(
                                   isVisible: true,
                                   textStyle: TextStyle(
                                       color: Colors.blue, fontSize: 12),
                                 ),
+                                xValueMapper: (PointData point, _) =>
+                                    DateTime.parse(point.date),
+                                highValueMapper: (PointData point, _) =>
+                                    point.percent,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Color.fromARGB(255, 0, 119, 255),
+                                    Color.fromARGB(131, 0, 119, 255),
+                                    Color.fromARGB(13, 0, 119, 255),
+                                  ],
+                                ),
+                                borderWidth: 1,
+                                borderColor: Colors.blue,
+                                lowValueMapper: (PointData point, _) => 0,
                               ),
                             ],
                           ),
@@ -209,8 +219,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                 textStyle:
                                     TextStyle(fontSize: 16, color: Colors.blue),
                               ),
-                              majorGridLines:
-                                  MajorGridLines(width: 1, color: Colors.red),
+                              majorGridLines: MajorGridLines(
+                                  width: 0.1, color: Colors.grey),
                             ),
                             primaryYAxis: NumericAxis(
                               title: AxisTitle(
@@ -218,13 +228,24 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                 textStyle:
                                     TextStyle(fontSize: 16, color: Colors.blue),
                               ),
-                              majorGridLines:
-                                  MajorGridLines(width: 1, color: Colors.red),
+                              majorGridLines: MajorGridLines(
+                                  width: 0.1, color: Colors.grey),
                             ),
-                            series: <SplineSeries<PointData, DateTime>>[
-                              SplineSeries<PointData, DateTime>(
+                            series: <SplineAreaSeries<PointData, DateTime>>[
+                              SplineAreaSeries<PointData, DateTime>(
                                 dataSource: _dateWiseData,
-                                color: Colors.green,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Color.fromARGB(255, 0, 119, 255),
+                                    Color.fromARGB(131, 0, 119, 255),
+                                    Color.fromARGB(13, 0, 119, 255),
+                                  ],
+                                ),
+                                borderWidth: 1,
+                                borderColor:
+                                    const Color.fromARGB(255, 0, 140, 255),
                                 xValueMapper: (PointData point, _) =>
                                     DateTime.parse(point.date),
                                 dataLabelSettings: DataLabelSettings(
@@ -248,8 +269,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                 textStyle:
                                     TextStyle(fontSize: 16, color: Colors.blue),
                               ),
-                              majorGridLines:
-                                  MajorGridLines(width: 1, color: Colors.green),
+                              majorGridLines: MajorGridLines(
+                                  width: 0.2, color: Colors.grey),
                             ),
                             primaryYAxis: NumericAxis(
                               title: AxisTitle(
@@ -257,17 +278,31 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                 textStyle:
                                     TextStyle(fontSize: 16, color: Colors.blue),
                               ),
-                              majorGridLines:
-                                  MajorGridLines(width: 1, color: Colors.green),
+                              majorGridLines: MajorGridLines(
+                                  width: 0.2, color: Colors.grey),
                             ),
                             series: <BarSeries<PointData, DateTime>>[
                               BarSeries<PointData, DateTime>(
                                 dataSource: _dateWiseData,
-                                gradient: LinearGradient(colors: const [
-                                  Color.fromARGB(255, 1, 56, 101),
-                                  Color.fromARGB(255, 16, 91, 152),
-                                  Color.fromARGB(255, 110, 169, 251)
-                                ]),
+                                gradient: LinearGradient(
+                                  begin:
+                                      Alignment.topCenter, // Start from the top
+                                  end: Alignment
+                                      .bottomCenter, // End at the bottom
+                                  colors: [
+                                    Color.fromARGB(202, 32, 199, 38),
+                                    const Color.fromARGB(86, 33, 149, 243)
+                                  ],
+                                ),
+                                borderWidth: 1,
+                                borderGradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    const Color.fromARGB(255, 42, 226, 48),
+                                    Colors.blue
+                                  ],
+                                ),
                                 dataLabelSettings: DataLabelSettings(
                                   isVisible: true,
                                   textStyle:
@@ -290,8 +325,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                 textStyle:
                                     TextStyle(fontSize: 16, color: Colors.blue),
                               ),
-                              majorGridLines:
-                                  MajorGridLines(width: 1, color: Colors.green),
+                              majorGridLines: MajorGridLines(
+                                  width: 0.2, color: Colors.grey),
                             ),
                             primaryYAxis: NumericAxis(
                               title: AxisTitle(
@@ -299,8 +334,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                 textStyle:
                                     TextStyle(fontSize: 16, color: Colors.blue),
                               ),
-                              majorGridLines:
-                                  MajorGridLines(width: 1, color: Colors.green),
+                              majorGridLines: MajorGridLines(
+                                  width: 0.2, color: Colors.grey),
                             ),
                             series: <ColumnSeries<PointData, DateTime>>[
                               ColumnSeries<PointData, DateTime>(
@@ -312,11 +347,25 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                   textStyle:
                                       TextStyle(color: white, fontSize: 12),
                                 ),
-                                gradient: LinearGradient(colors: const [
-                                  Color.fromARGB(255, 1, 56, 101),
-                                  Color.fromARGB(255, 16, 91, 152),
-                                  Color.fromARGB(255, 110, 169, 251)
-                                ]),
+                                gradient: LinearGradient(
+                                  begin:
+                                      Alignment.topCenter, // Start from the top
+                                  end: Alignment
+                                      .bottomCenter, // End at the bottom
+                                  colors: [
+                                    Color.fromARGB(202, 32, 199, 38),
+                                    const Color.fromARGB(86, 33, 149, 243)
+                                  ],
+                                ),
+                                borderWidth: 1,
+                                borderGradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    const Color.fromARGB(255, 42, 226, 48),
+                                    Colors.blue
+                                  ],
+                                ),
                                 yValueMapper: (PointData point, _) =>
                                     point.percent,
                               ),
@@ -333,8 +382,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                 textStyle:
                                     TextStyle(fontSize: 16, color: Colors.blue),
                               ),
-                              majorGridLines:
-                                  MajorGridLines(width: 1, color: Colors.grey),
+                              majorGridLines: MajorGridLines(
+                                  width: 0.5, color: Colors.grey),
                             ),
                             primaryYAxis: NumericAxis(
                               title: AxisTitle(
@@ -342,8 +391,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                 textStyle:
                                     TextStyle(fontSize: 16, color: Colors.blue),
                               ),
-                              majorGridLines:
-                                  MajorGridLines(width: 1, color: Colors.grey),
+                              majorGridLines: MajorGridLines(
+                                  width: 0.5, color: Colors.grey),
                             ),
                             series: <ColumnSeries<PointData, DateTime>>[
                               ColumnSeries<PointData, DateTime>(
@@ -356,11 +405,16 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                   textStyle:
                                       TextStyle(color: white, fontSize: 12),
                                 ),
-                                gradient: LinearGradient(colors: const [
-                                  Color.fromARGB(255, 0, 12, 21),
-                                  Color.fromARGB(255, 18, 96, 159),
-                                  Color.fromARGB(255, 158, 198, 254)
-                                ]),
+                                borderColor: Colors.red,
+                                borderWidth: 0.2,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Color.fromARGB(255, 241, 39, 39),
+                                    Color.fromARGB(37, 255, 255, 3)
+                                  ],
+                                ),
                                 yValueMapper: (PointData point, _) =>
                                     point.activitiesCount,
                               ),
@@ -374,11 +428,16 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                   textStyle:
                                       TextStyle(color: white, fontSize: 12),
                                 ),
-                                gradient: LinearGradient(colors: const [
-                                  Color.fromARGB(255, 0, 34, 9),
-                                  Color.fromARGB(255, 0, 255, 47),
-                                  Color.fromARGB(255, 110, 251, 115)
-                                ]),
+                                borderColor: Colors.orange,
+                                borderWidth: 0.2,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Color.fromARGB(196, 255, 234, 3),
+                                    Color.fromARGB(64, 143, 241, 39),
+                                  ],
+                                ),
                                 yValueMapper: (PointData point, _) =>
                                     point.points,
                               ),
@@ -394,8 +453,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                 textStyle:
                                     TextStyle(fontSize: 16, color: Colors.blue),
                               ),
-                              majorGridLines:
-                                  MajorGridLines(width: 1, color: Colors.grey),
+                              majorGridLines: MajorGridLines(
+                                  width: 0.2, color: Colors.grey),
                             ),
                             primaryYAxis: NumericAxis(
                               title: AxisTitle(
@@ -403,8 +462,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                 textStyle:
                                     TextStyle(fontSize: 16, color: Colors.blue),
                               ),
-                              majorGridLines:
-                                  MajorGridLines(width: 1, color: Colors.grey),
+                              majorGridLines: MajorGridLines(
+                                  width: 0.2, color: Colors.grey),
                             ),
                             series: <RangeAreaSeries<PointData, DateTime>>[
                               RangeAreaSeries<PointData, DateTime>(
@@ -418,11 +477,16 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                     DateTime.parse(point.date),
                                 highValueMapper: (PointData point, _) =>
                                     point.activitiesCount,
-                                gradient: LinearGradient(colors: const [
-                                  Color.fromARGB(255, 20, 20, 20),
-                                  Color.fromARGB(255, 6, 83, 145),
-                                  Color.fromARGB(255, 107, 161, 236)
-                                ]),
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Color.fromARGB(255, 241, 39, 39),
+                                    Color.fromARGB(37, 255, 255, 3)
+                                  ],
+                                ),
+                                borderColor: Colors.orange,
+                                borderWidth: 0.2,
                                 lowValueMapper: (PointData point, _) => 0,
                               ),
                               RangeAreaSeries<PointData, DateTime>(
@@ -434,11 +498,16 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                   textStyle: TextStyle(
                                       color: Colors.green, fontSize: 12),
                                 ),
-                                gradient: LinearGradient(colors: const [
-                                  Color.fromARGB(255, 29, 29, 29),
-                                  Color.fromARGB(255, 7, 96, 24),
-                                  Color.fromARGB(255, 50, 212, 56)
-                                ]),
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Color.fromARGB(196, 255, 234, 3),
+                                    Color.fromARGB(64, 143, 241, 39),
+                                  ],
+                                ),
+                                borderColor: Colors.yellow,
+                                borderWidth: 0.2,
                                 highValueMapper: (PointData point, _) =>
                                     point.points,
                                 lowValueMapper: (PointData point, _) => 0,

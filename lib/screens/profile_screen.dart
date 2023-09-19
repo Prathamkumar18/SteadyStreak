@@ -44,7 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         retrieveUserName();
       });
     } else {
-      showSnackBar(context,'Failed to update username');
+      showSnackBar(context, 'Failed to update username');
     }
   }
 
@@ -71,9 +71,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       setState(() {
         onTapPasswordEdit = false;
       });
-      showSnackBar(context,'Password updated successfully');
+      showSnackBar(context, 'Password updated successfully');
     } else {
-      showSnackBar(context,'Failed to update password');
+      showSnackBar(context, 'Failed to update password');
     }
   }
 
@@ -159,7 +159,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   onPressed: () async {
                                     final preferences =
                                         await SharedPreferences.getInstance();
-                                    preferences.remove(widget.email);
+                                    String? token =
+                                        preferences.getString('token');
+                                    preferences.remove(token!);
                                     Navigator.of(context).pushReplacement(
                                       MaterialPageRoute(
                                         builder: (context) => LoginScreen(),
@@ -239,9 +241,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           builder: (context) => LoginScreen(),
                                         ),
                                       );
-                                      showSnackBar(context,'Account deleted successfully');
+                                      showSnackBar(context,
+                                          'Account deleted successfully');
                                     } else {
-                                      showSnackBar(context,'Failed to delete account');
+                                      showSnackBar(
+                                          context, 'Failed to delete account');
                                     }
                                   },
                                   child: Text('Delete Account'),
