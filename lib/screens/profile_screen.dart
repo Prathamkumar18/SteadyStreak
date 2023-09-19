@@ -82,20 +82,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     await preferences.remove(email);
   }
 
-  Future<void> deleteUserAccount() async {
-    final apiUrl = '$deleteAccount/${widget.email}';
-    final response = await http.delete(Uri.parse(apiUrl));
-    if (response.statusCode == 200) {
-      deleteSharedPreferences(widget.email);
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
-      );
-      print('Account deleted successfully');
-    } else {
-      print('Failed to delete account');
-    }
-  }
+  Future<void> deleteUserAccount() async {}
 
   @override
   void initState() {
@@ -224,7 +211,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           backgroundColor: MaterialStateColor.resolveWith(
                               (states) => black)),
                       onPressed: () {
-                        deleteUserAccount();
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Delete Account'),
+                              content: Text('Are you sure?'),
+                              actions: <Widget>[
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () async {
+                                    final apiUrl =
+                                        '$deleteAccount/${widget.email}';
+                                    final response =
+                                        await http.delete(Uri.parse(apiUrl));
+                                    if (response.statusCode == 200) {
+                                      final preferences =
+                                          await SharedPreferences.getInstance();
+                                      preferences.remove(widget.email);
+                                      Navigator.of(context).pushReplacement(
+                                        MaterialPageRoute(
+                                          builder: (context) => LoginScreen(),
+                                        ),
+                                      );
+                                      print('Account deleted successfully');
+                                    } else {
+                                      print('Failed to delete account');
+                                    }
+                                  },
+                                  child: Text('Delete Account'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
                       },
                       icon: Icon(
                         Icons.delete_outline,
