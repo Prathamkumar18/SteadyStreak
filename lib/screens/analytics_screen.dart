@@ -188,12 +188,12 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                 xValueMapper: (PointData point, _) =>
                                     DateTime.parse(point.date),
                                 yValueMapper: (PointData point, _) =>
-                                    point.points,
+                                    point.percent,
                                 name: 'percent',
                                 dataLabelSettings: DataLabelSettings(
                                   isVisible: true,
-                                  textStyle:
-                                      TextStyle(color: white, fontSize: 12),
+                                  textStyle: TextStyle(
+                                      color: Colors.blue, fontSize: 12),
                                 ),
                               ),
                             ],
@@ -228,8 +228,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                     DateTime.parse(point.date),
                                 dataLabelSettings: DataLabelSettings(
                                   isVisible: true,
-                                  textStyle:
-                                      TextStyle(color: white, fontSize: 12),
+                                  textStyle: TextStyle(
+                                      color: Colors.blue, fontSize: 12),
                                 ),
                                 yValueMapper: (PointData point, _) =>
                                     point.percent,
@@ -301,8 +301,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                               majorGridLines:
                                   MajorGridLines(width: 1, color: Colors.green),
                             ),
-                            series: <StackedColumnSeries<PointData, DateTime>>[
-                              StackedColumnSeries<PointData, DateTime>(
+                            series: <ColumnSeries<PointData, DateTime>>[
+                              ColumnSeries<PointData, DateTime>(
                                 dataSource: _dateWiseData,
                                 xValueMapper: (PointData point, _) =>
                                     DateTime.parse(point.date),
@@ -344,8 +344,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                               majorGridLines:
                                   MajorGridLines(width: 1, color: Colors.grey),
                             ),
-                            series: <StackedColumnSeries<PointData, DateTime>>[
-                              StackedColumnSeries<PointData, DateTime>(
+                            series: <ColumnSeries<PointData, DateTime>>[
+                              ColumnSeries<PointData, DateTime>(
                                 dataSource: _dateWiseData,
                                 xValueMapper: (PointData point, _) =>
                                     DateTime.parse(point.date),
@@ -363,7 +363,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                 yValueMapper: (PointData point, _) =>
                                     point.activitiesCount,
                               ),
-                              StackedColumnSeries<PointData, DateTime>(
+                              ColumnSeries<PointData, DateTime>(
                                 dataSource: _dateWiseData,
                                 xValueMapper: (PointData point, _) =>
                                     DateTime.parse(point.date),
@@ -410,8 +410,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                 dataSource: _dateWiseData,
                                 dataLabelSettings: DataLabelSettings(
                                   isVisible: true,
-                                  textStyle:
-                                      TextStyle(color: white, fontSize: 12),
+                                  textStyle: TextStyle(
+                                      color: Colors.blue, fontSize: 12),
                                 ),
                                 xValueMapper: (PointData point, _) =>
                                     DateTime.parse(point.date),
@@ -422,8 +422,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                   Color.fromARGB(255, 6, 83, 145),
                                   Color.fromARGB(255, 107, 161, 236)
                                 ]),
-                                lowValueMapper: (PointData point, _) =>
-                                    0, // Customize the low value
+                                lowValueMapper: (PointData point, _) => 0,
                               ),
                               RangeAreaSeries<PointData, DateTime>(
                                 dataSource: _dateWiseData,
@@ -431,8 +430,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                     DateTime.parse(point.date),
                                 dataLabelSettings: DataLabelSettings(
                                   isVisible: true,
-                                  textStyle:
-                                      TextStyle(color: white, fontSize: 12),
+                                  textStyle: TextStyle(
+                                      color: Colors.green, fontSize: 12),
                                 ),
                                 gradient: LinearGradient(colors: const [
                                   Color.fromARGB(255, 29, 29, 29),
@@ -441,8 +440,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                                 ]),
                                 highValueMapper: (PointData point, _) =>
                                     point.points,
-                                lowValueMapper: (PointData point, _) =>
-                                    0, // Customize the low value
+                                lowValueMapper: (PointData point, _) => 0,
                               ),
                             ],
                           ),

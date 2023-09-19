@@ -150,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         body: jsonEncode(<String, dynamic>{
           'email': widget.email,
-          'date': date, // Use the provided date (previous day)
+          'date': date,
         }),
       );
 
@@ -498,24 +498,35 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: SizedBox(
                     height: h - 390,
                     width: w,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      physics: BouncingScrollPhysics(),
-                      child: Column(
-                        children: [
-                          for (var activity in activities)
-                            TaskItem(
-                              activity: activity,
-                              onDelete: () {
-                                deleteTask(widget.email, activity.title);
-                              },
-                              onUpdateStatus: (isChecked) {
-                                updateTaskStatus(activity.title, isChecked);
-                              },
+                    child: (activities.length == 0)
+                        ? Container(
+                            height: 300,
+                            width: 200,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image:
+                                        AssetImage("assets/images/empty.png"),
+                                    fit: BoxFit.fill)),
+                          )
+                        : SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            physics: BouncingScrollPhysics(),
+                            child: Column(
+                              children: [
+                                for (var activity in activities)
+                                  TaskItem(
+                                    activity: activity,
+                                    onDelete: () {
+                                      deleteTask(widget.email, activity.title);
+                                    },
+                                    onUpdateStatus: (isChecked) {
+                                      updateTaskStatus(
+                                          activity.title, isChecked);
+                                    },
+                                  ),
+                              ],
                             ),
-                        ],
-                      ),
-                    ),
+                          ),
                   ),
                 ),
         ],

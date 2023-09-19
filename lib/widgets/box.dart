@@ -37,11 +37,10 @@ class Box extends StatelessWidget {
     else if (val >= 11 && val <= 30)
       return Color.fromARGB(255, 17, 104, 20);
     else if (val >= 31 && val <= 50)
-      return Color.fromARGB(255, 1, 139, 6);
+      return Color.fromARGB(224, 1, 145, 6);
     else if (val >= 51 && val <= 70)
-      return Color.fromARGB(255, 1, 189, 7);
-    else if (val >= 71 && val <= 90)
-      return const Color.fromARGB(255, 1, 222, 9);
+      return Color.fromARGB(166, 2, 210, 9);
+    else if (val >= 71 && val <= 90) return Color.fromARGB(209, 1, 221, 8);
     return Color.fromARGB(255, 0, 255, 8);
   }
 }
