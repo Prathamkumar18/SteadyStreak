@@ -2,7 +2,8 @@
 Steady Streak is a powerful consistency tracker application designed to help users achieve their goals by tracking and managing tasks, providing daily points tracking, and offering insightful analytics."Steady Streak" suggests a pattern of consistency and continuous success. It's like saying, "Keep doing well day after day without any interruptions." In the context of the app, it means helping you stay on track and achieve your goals consistently.
 
 # Demo
-![1694810828448](https://github.com/Prathamkumar18/SteadyStreakFrontend/assets/96865753/86599449-178b-4ec4-8745-7f16a98cd43c)
+
+![VID_20230919_17-1695123268093](https://github.com/Prathamkumar18/SteadyStreakFrontend/assets/96865753/a9eca9f3-4280-4ef3-9707-d76778a2165f)
 
 ## Features
 
