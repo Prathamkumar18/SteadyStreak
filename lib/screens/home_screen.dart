@@ -16,7 +16,7 @@ import '../services/methods.dart';
 class HomeScreen extends StatefulWidget {
   final String email;
 
-  const HomeScreen({
+  HomeScreen({
     Key? key,
     required this.email,
   }) : super(key: key);
@@ -61,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: jsonEncode(<String, dynamic>{
         'email': widget.email,
         'title': title,
-        'isChecked': isChecked,
+        'isPending': isChecked,
       }),
     );
 
@@ -70,11 +70,11 @@ class _HomeScreenState extends State<HomeScreen> {
         final updatedActivity = activities.firstWhere(
           (activity) => activity.title == title,
         );
-        updatedActivity.isChecked = isChecked;
+        updatedActivity.isPending = isChecked;
         c = countCompletedTasks(activities);
       });
     } else {
-      showSnackBar(context,'Failed to update task status');
+      showSnackBar(context, 'Failed to update task status');
     }
   }
 
@@ -107,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
         fetchActivities();
       });
     } else {
-      showSnackBar(context,'Failed to delete task');
+      showSnackBar(context, 'Failed to delete task');
     }
   }
 
@@ -134,7 +134,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final lastScheduledDate = await getLastScheduledDate();
     if (lastScheduledDate == null || isNewDay(lastScheduledDate)) {
       final currentDate = DateTime.now();
-      currentDate.subtract(Duration(days: 1));
       final previousDay = currentDate.toIso8601String();
       await scheduleUserDailyUpdate(previousDay);
       await saveLastScheduledDate();
@@ -158,12 +157,12 @@ class _HomeScreenState extends State<HomeScreen> {
       if (response.statusCode == 200) {
         final responseBody = json.decode(response.body);
         final message = responseBody['message'];
-        showSnackBar(context,message);
+        showSnackBar(context, message);
       } else {
-        showSnackBar(context,'Failed to schedule daily update');
+        showSnackBar(context, 'Failed to schedule daily update');
       }
     } catch (error) {
-      showSnackBar(context,'Error scheduling daily update: $error');
+      showSnackBar(context, 'Error scheduling daily update: $error');
     }
   }
 

@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/activity.dart';
 import '../utils/utils.dart';
+import 'package:image_picker/image_picker.dart';
 
 class TaskItem extends StatefulWidget {
   final Activity activity;
   final VoidCallback onDelete;
   final ValueChanged<bool> onUpdateStatus;
 
-  const TaskItem({
+  XFile? file;
+  ImagePicker _picker = ImagePicker();
+  TaskItem({
     Key? key,
     required this.activity,
     required this.onDelete,
@@ -126,24 +129,61 @@ class _TaskItemState extends State<TaskItem> {
                         ),
                       ),
                     ),
-                    Transform.scale(
-                      scale: 1.4,
-                      child: Theme(
-                          data: ThemeData(
-                            unselectedWidgetColor:
-                                _parseColor(widget.activity.color),
-                          ),
-                          child: Checkbox(
-                            activeColor: Colors.green,
-                            value: widget.activity.isChecked,
-                            onChanged: (bool? newValue) {
-                              setState(() {
-                                widget.activity.isChecked = newValue!;
-                                widget.onUpdateStatus(newValue);
-                              });
-                            },
-                          )),
-                    ),
+                    (widget.activity.isChecked == true)
+                        ? Container(
+                            height: 20,
+                            width: 130,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: _parseColor(widget.activity.color),
+                            ),
+                            child: Center(
+                              child: Text(
+                                "Task completed",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          )
+                        : (widget.activity.isPending == false)
+                            ? Container(
+                                height: 20,
+                                width: 130,
+                                child: ElevatedButton(
+                                  onPressed: () async {
+                                    final XFile? photo = await widget._picker
+                                        .pickImage(source: ImageSource.gallery);
+                                    setState(() {
+                                      widget.file = photo;
+                                      widget.activity.isPending = true;
+                                      widget.onUpdateStatus(true);
+                                    });
+                                  },
+                                  child: Text(
+                                    "Upload Image",
+                                    style: TextStyle(fontSize: 10),
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                height: 20,
+                                width: 130,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: _parseColor(widget.activity.color),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    "Verification pending",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
                     IconButton(
                       icon: Icon(
                         Icons.delete_forever,
@@ -175,7 +215,7 @@ class _TaskItemState extends State<TaskItem> {
           final intColor = int.parse(hexColor, radix: 16);
           return Color(intColor);
         } catch (e) {
-         showSnackBar(context,'Error parsing color: $e');
+          showSnackBar(context, 'Error parsing color: $e');
         }
       }
     }

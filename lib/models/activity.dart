@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 class Activity {
   final String id;
   final String color;
@@ -7,6 +8,7 @@ class Activity {
   final String priority;
   final String daily;
   bool isChecked;
+  bool isPending;
 
   Activity({
     required this.id,
@@ -17,6 +19,7 @@ class Activity {
     required this.priority,
     required this.daily,
     required this.isChecked,
+    required this.isPending,
   });
 
   factory Activity.fromJson(Map<String, dynamic> json) {
@@ -28,6 +31,7 @@ class Activity {
         description: json['description'],
         priority: json['priority'],
         daily: json['daily'],
-        isChecked: json['isChecked'] ?? false);
+        isChecked: json['isChecked'] ?? false,
+        isPending: json['isPending'] ?? false);
   }
 }

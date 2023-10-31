@@ -44,6 +44,7 @@ dependencies:
   shimmer: 
   jwt_decoder: 
   http: 
+  image_picker:
   flutter_launcher_icons: 
 
 dev_dependencies:

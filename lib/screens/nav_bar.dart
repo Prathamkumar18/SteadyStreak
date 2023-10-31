@@ -4,6 +4,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:persistent_bottom_nav_bar/persistent_tab_view.dart';
 import 'package:steady_streak/screens/home_screen.dart';
 import 'package:steady_streak/screens/profile_screen.dart';
+import 'package:steady_streak/screens/verification_screen.dart';
 import 'package:steady_streak/utils/colors.dart';
 import 'analytics_screen.dart';
 
@@ -30,6 +31,7 @@ class _BottomNavState extends State<BottomNav> {
         email: email,
       ),
       HomeScreen(email: email),
+      VerificationScreen(),
       ProfileScreen(
         email: email,
       )
@@ -83,6 +85,12 @@ List<PersistentBottomNavBarItem> _navBarsItems() {
     PersistentBottomNavBarItem(
       icon: Icon(CupertinoIcons.home),
       title: ("Home"),
+      activeColorPrimary: CupertinoColors.activeBlue,
+      inactiveColorPrimary: CupertinoColors.systemGrey,
+    ),
+    PersistentBottomNavBarItem(
+      icon: Icon(Icons.done_outline_rounded),
+      title: ("Verify"),
       activeColorPrimary: CupertinoColors.activeBlue,
       inactiveColorPrimary: CupertinoColors.systemGrey,
     ),
