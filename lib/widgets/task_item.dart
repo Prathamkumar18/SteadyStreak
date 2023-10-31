@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/activity.dart';
@@ -7,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 class TaskItem extends StatefulWidget {
   final Activity activity;
   final VoidCallback onDelete;
+  final String email;
   final ValueChanged<bool> onUpdateStatus;
 
   XFile? file;
@@ -16,6 +21,7 @@ class TaskItem extends StatefulWidget {
     required this.activity,
     required this.onDelete,
     required this.onUpdateStatus,
+    required this.email,
   }) : super(key: key);
 
   @override
@@ -23,13 +29,54 @@ class TaskItem extends StatefulWidget {
 }
 
 class _TaskItemState extends State<TaskItem> {
+  final FirebaseStorage _storage = FirebaseStorage.instance;
+  final DatabaseReference _databaseReference =
+      FirebaseDatabase.instance.reference();
+
+  Future<void> uploadImageToFirebaseStorage(XFile? image) async {
+    if (image == null) {
+      showSnackBar(context, "No image selected.");
+      return;
+    }
+
+    final String imageFileName =
+        '${widget.email}_${widget.activity.title}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+    final Reference storageReference =
+        _storage.ref().child('task_images/$imageFileName');
+
+    try {
+      UploadTask uploadTask = storageReference.putFile(File(image.path));
+      await uploadTask;
+
+      if (uploadTask.snapshot.state == TaskState.success) {
+        final String downloadURL = await storageReference.getDownloadURL();
+
+        final Map<String, dynamic> taskData = {
+          'email': widget.email,
+          'title': widget.activity.title,
+          'description': widget.activity.description,
+          'imageURL': downloadURL,
+        };
+
+        final String email = widget.email.replaceAll('.', '-');
+        final String title = widget.activity.title.replaceAll('.', '-');
+        final String compositeKey = '$email-${title}';
+        _databaseReference.child('tasks/$compositeKey').set(taskData);
+      } else {
+        showSnackBar(context, "Image upload failed. Please try again.");
+      }
+    } catch (e) {
+      showSnackBar(context, "An error occurred during the upload: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 100,
       margin: EdgeInsets.only(top: 5, left: 10, right: 10),
       decoration: BoxDecoration(
-        color: Colors.black,
+        color: const Color.fromARGB(255, 37, 37, 37),
         border: Border.all(
           color: _parseColor(widget.activity.color),
           width: 2,
@@ -159,6 +206,7 @@ class _TaskItemState extends State<TaskItem> {
                                       widget.file = photo;
                                       widget.activity.isPending = true;
                                       widget.onUpdateStatus(true);
+                                      uploadImageToFirebaseStorage(photo);
                                     });
                                   },
                                   child: Text(

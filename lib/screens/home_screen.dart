@@ -515,7 +515,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               children: [
                                 for (var activity in activities)
                                   TaskItem(
-                                    activity: activity,
+                                    activity: activity,email:widget.email,
                                     onDelete: () {
                                       deleteTask(widget.email, activity.title);
                                     },
