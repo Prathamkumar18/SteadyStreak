@@ -46,9 +46,9 @@ dependencies:
   http: 
   image_picker:
   flutter_launcher_icons: 
-  firebase_core: 
-  firebase_storage: 
-  firebase_database:
+  firebase_database: ^10.3.2
+  firebase_core: ^2.20.0
+  firebase_storage: ^11.4.0
 
 dev_dependencies:
   flutter_test:

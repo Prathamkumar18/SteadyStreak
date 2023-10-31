@@ -31,7 +31,7 @@ class _BottomNavState extends State<BottomNav> {
         email: email,
       ),
       HomeScreen(email: email),
-      VerificationScreen(),
+      VerificationScreen(email: email,),
       ProfileScreen(
         email: email,
       )
