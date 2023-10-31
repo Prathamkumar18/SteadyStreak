@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:steady_streak/widgets/verify.dart';
 
@@ -54,7 +55,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
 
       tasksData.forEach((key, data) {
         Tasks task = Tasks.fromJson(Map<String, dynamic>.from(data));
-        if (task.email == widget.email) {
+        if (task.email != widget.email) {
           allTasks.add(task);
         }
       });
@@ -63,24 +64,13 @@ class _VerificationScreenState extends State<VerificationScreen> {
     return allTasks;
   }
 
-  void deleteTaskFromDatabaseByEmailAndTitle(String email, String title) {
-    DatabaseReference databaseReference = FirebaseDatabase.instance.reference();
-    DatabaseReference tasksReference = databaseReference.child('tasks');
-    final String Email = email.replaceAll('.', '-');
-    final String Title = title.replaceAll('.', '-');
-    final String compositeKey = '$Email-${Title}';
-    DatabaseReference taskToRemove = tasksReference.child('$compositeKey');
-    taskToRemove.remove().then((_) {
-      print('Task deleted from the database');
-    }).catchError((error) {
-      print('Error deleting task from the database: $error');
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    const SystemUiOverlayStyle(
+        statusBarColor: Colors.white, systemNavigationBarColor: Colors.white);
     return Scaffold(
       appBar: AppBar(
+          backgroundColor: Colors.black,
           elevation: 0,
           title: GestureDetector(
               onTap: () {
@@ -88,8 +78,12 @@ class _VerificationScreenState extends State<VerificationScreen> {
                   fetchAndFilterTasks();
                 });
               },
-              child: Text("Verification"))),
-      backgroundColor: Colors.white,
+              child: Center(
+                  child: Text(
+                "Verification",
+                style: TextStyle(fontSize: 40),
+              )))),
+      backgroundColor: Color.fromARGB(255, 229, 230, 229),
       body: FutureBuilder<List<Tasks>>(
         future: fetchAndFilterTasks(),
         builder: (context, snapshot) {
@@ -102,14 +96,11 @@ class _VerificationScreenState extends State<VerificationScreen> {
             if (tasks == null || tasks.isEmpty) {
               return Text('No tasks found for the current user.');
             }
-
             return ListView.builder(
               itemCount: tasks.length,
               itemBuilder: (context, index) {
                 final task = tasks[index];
                 return VerifyBox(
-                  onDelete: () => deleteTaskFromDatabaseByEmailAndTitle(
-                      task.email, task.title),
                   isVarified: task.isVarified,
                   email: task.email,
                   description: task.description,

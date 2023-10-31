@@ -57,7 +57,6 @@ class _TaskItemState extends State<TaskItem> {
           'imageURL': downloadURL,
           'isVerified':false,
         };
-
         final String email = widget.email.replaceAll('.', '-');
         final String title = widget.activity.title.replaceAll('.', '-');
         final String compositeKey = '$email-${title}';
