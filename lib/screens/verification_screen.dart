@@ -55,7 +55,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
 
       tasksData.forEach((key, data) {
         Tasks task = Tasks.fromJson(Map<String, dynamic>.from(data));
-        if (task.email != widget.email) {
+        if (task.email == widget.email) {
           allTasks.add(task);
         }
       });
@@ -85,6 +85,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
               )))),
       backgroundColor: Color.fromARGB(255, 229, 230, 229),
       body: FutureBuilder<List<Tasks>>(
+        
         future: fetchAndFilterTasks(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
