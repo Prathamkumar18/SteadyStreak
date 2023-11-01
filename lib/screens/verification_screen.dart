@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -44,10 +43,12 @@ class VerificationScreen extends StatefulWidget {
 
 class _VerificationScreenState extends State<VerificationScreen> {
   List<Tasks> tasks = [];
-  Future<List<Tasks>> fetchAndFilterTasks() async {
+  int itemsPerPage = 10;
+  int currentPage = 1;
+
+  Future<void> fetchAndFilterTasks() async {
     DatabaseReference databaseReference = FirebaseDatabase.instance.reference();
     DatabaseEvent databaseEvent = await databaseReference.child('tasks').once();
-    List<Tasks> allTasks = [];
 
     if (databaseEvent.snapshot.value != null) {
       Map<dynamic, dynamic> tasksData =
@@ -56,59 +57,62 @@ class _VerificationScreenState extends State<VerificationScreen> {
       tasksData.forEach((key, data) {
         Tasks task = Tasks.fromJson(Map<String, dynamic>.from(data));
         if (task.email == widget.email) {
-          allTasks.add(task);
+          setState(() {
+            tasks.add(task);
+          });
         }
       });
     }
-
-    return allTasks;
   }
 
   @override
+  void initState() {
+    super.initState();
+    fetchAndFilterTasks().then((_) {
+      // You can call fetchAndFilterTasks() here to load the initial data.
+      // However, for pagination, you may load data on-demand when scrolling.
+    });
+  }
+
   Widget build(BuildContext context) {
     const SystemUiOverlayStyle(
         statusBarColor: Colors.white, systemNavigationBarColor: Colors.white);
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Colors.black,
-          elevation: 0,
-          title: GestureDetector(
-              onTap: () {
-                setState(() {
-                  fetchAndFilterTasks();
-                });
-              },
-              child: Center(
-                  child: Text(
-                "Verification",
-                style: TextStyle(fontSize: 40),
-              )))),
+        backgroundColor: Colors.black,
+        elevation: 0,
+        title: GestureDetector(
+          onTap: () {
+            fetchAndFilterTasks();
+          },
+          child: Center(
+            child: Text(
+              "Verification",
+              style: TextStyle(fontSize: 40),
+            ),
+          ),
+        ),
+      ),
       backgroundColor: Color.fromARGB(255, 229, 230, 229),
-      body: FutureBuilder<List<Tasks>>(
-        
-        future: fetchAndFilterTasks(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else {
-            final tasks = snapshot.data;
-            if (tasks == null || tasks.isEmpty) {
-              return Text('No tasks found for the current user.');
+      body: ListView.builder(
+        itemCount: tasks.length < currentPage * itemsPerPage
+            ? tasks.length + 1
+            : (currentPage + 1) * itemsPerPage,
+        itemBuilder: (context, index) {
+          if (index == tasks.length) {
+            if (tasks.length < currentPage * itemsPerPage) {
+              currentPage++;
+              fetchAndFilterTasks();
             }
-            return ListView.builder(
-              itemCount: tasks.length,
-              itemBuilder: (context, index) {
-                final task = tasks[index];
-                return VerifyBox(
-                  isVarified: task.isVarified,
-                  email: task.email,
-                  description: task.description,
-                  imageURL: task.imageURL,
-                  title: task.title,
-                );
-              },
+            return CircularProgressIndicator();
+          } else {
+            final task = tasks[index];
+            return VerifyBox(
+              isVarified: task.isVarified,
+              email: task.email,
+              description: task.description,
+              imageURL: task.imageURL,
+              title: task.title,
             );
           }
         },
