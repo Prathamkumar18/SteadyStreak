@@ -3,7 +3,7 @@ Steady Streak is a powerful consistency tracker application designed to help use
 
 # Demo
 
-![VID_20230919_17-1695123268093](https://github.com/Prathamkumar18/SteadyStreakFrontend/assets/96865753/a9eca9f3-4280-4ef3-9707-d76778a2165f)
+https://github.com/Prathamkumar18/SteadyStreakFrontend/assets/96865753/76efa680-3899-4a37-bc2e-b2a0035c4375
 
 ## Features
 
@@ -12,6 +12,8 @@ Steady Streak App comes with a wide range of features to support users in mainta
 - *User Authentication:* Users can securely create accounts and log in to access their personalized data.
 
 - *Task Management:* Easily add, delete, and update tasks. Tasks are displayed by priority, and the app provides valuable task statistics to help users stay organized and focused.
+
+- *Task Verification:* Users have to upload task verification images and points are awarded only when the task is verified by other users.
 
 - *Daily Points Tracking:* The app automates the process of tracking daily points, giving users a clear understanding of their progress.
 
