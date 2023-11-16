@@ -3,7 +3,9 @@ Steady Streak is a powerful consistency tracker application designed to help use
 
 # Demo
 
-https://github.com/Prathamkumar18/SteadyStreakFrontend/assets/96865753/76efa680-3899-4a37-bc2e-b2a0035c4375
+
+https://github.com/Prathamkumar18/SteadyStreakFrontend/assets/96865753/65beb199-ad33-463b-9051-f2d62de1afc5
+
 
 ## Features
 
